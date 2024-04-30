@@ -99,7 +99,7 @@ void leggiFile(FILE *fin)
     /*
       lettura dell'array pre-processato:
       carico tutte le parole distinte in un array arrayParole[]
-      es: arraParole{. quel ramo del lago di como , ...}
+      es: arrayParole{. quel ramo del lago di como , ...}
       */
 
     popolaArrayParole(filePreprocessato);
@@ -109,12 +109,8 @@ void leggiFile(FILE *fin)
 
     printf("\n\nNumero Parole distinte: %d\n\nNumero Parole Totali: %d\n\n", numeroDistinctParoleTesto, numeroParoleTotali);
     fflush(stdout);
-    printf("\n\n");
-    for (int j = 0; j < 200; j++)
-    {
-        printf("%s ", arrayParole[j]);
-        fflush(stdout);
-    }
+
+    esportaCsv(arrayParole, "export.csv");
     // popolaArrayRecordOccorrenze(fin);
 }
 
@@ -126,7 +122,6 @@ al termine dell'elaborazione ciascuna parola o segno di punteggiatura sono separ
 */
 char *preparaStream(FILE *fin)
 {
-    // TO DO: rimuovere i doppi spazi//
     // TO DO 2: messo temporaneamente ~ in coda all'array
     char c;
     char cPrec = ' ';
@@ -152,11 +147,7 @@ char *preparaStream(FILE *fin)
         {
             // se il carattere precedente e il carattere letto sono entrambi spazi,
             // non inserisco il carattere per evetiare doppi spazi inutili
-            if ((cPrec == c) == ' ')
-            {
-                printf("salto");
-            }
-            else
+            if ((cPrec == c) != ' ')
                 appendCharToString(stringone, c, index);
             index++;
             cPrec = c;
@@ -277,6 +268,9 @@ void popolaArrayParole(char *fin)
         }
         indexFin++;
     }
+    // inserisco fine Array
+    strcpy(parola, "~");
+    inserisciParola(arrayParole, parola, numeroDistinctParoleTesto);
 }
 
 void stampaStatistiche(Record *arrayRecord, int numeroParoleTrovate)

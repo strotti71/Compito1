@@ -6,10 +6,6 @@
 // int isSeparator(char c);
 // char *appendCharToString(char *s, char c);
 
-void stampaStringaformattata(char *s)
-{
-}
-
 /*
 Metodo per pulire una stringa
 */
@@ -32,7 +28,7 @@ int isSeparator(char c)
 metodo che indivisua se il carattere è un carattere di punteggiatura*/
 int isPunteggiatura(char c)
 {
-    return c == ',' || c == ';' || c == '.' || c == '!' || c == '?';
+    return c == ',' || c == ';' || c == '.' || c == '!' || c == ':' || c == '?';
 }
 
 /*
@@ -50,7 +46,6 @@ char *appendCharToString(char *s, char c)
     sprintf(sTemp, "%s%c", s, c);
     return (sTemp);
 }*/
-
 char *appendCharToString(char *s, char c, int i)
 {
     s[i] = c;
@@ -60,7 +55,6 @@ il metodo resetta le parole precedente e successiva
 */
 void resettaParole(char *parolaPrecedente, char *parolaSuccessiva, int indexChar)
 {
-
     pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
     strcpy(parolaPrecedente, parolaSuccessiva);
     pulisciStringa(parolaSuccessiva, _MAX_LENGTH_WORD_);

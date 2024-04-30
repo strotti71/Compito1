@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "stringHandler.h"
 
 int apriFile(char *filename, FILE *f);
-int esportaCsv(char *source, char *fileName);
+int esportaCsv(type_parola *source, char *fileName);
