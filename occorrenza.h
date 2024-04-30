@@ -1,9 +1,7 @@
 #include "stringHandler.h"
 
-
 int cercaParola(type_parola *a, type_parola parolaCercata, int lunghezzaArray);
 void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray);
-
 
 /*
 struttura per registrare un'occorrenza di parola successiva.
@@ -17,7 +15,7 @@ typedef struct
 } Occorrenza;
 
 /*
-Struttira per registrare i dati di ciascuna parola.
+Struttra per registrare i dati di ciascuna parola.
 
     - La parola è un intero corrispondente alla cella dell'arrayParole
     - il numero di parole successive trovate

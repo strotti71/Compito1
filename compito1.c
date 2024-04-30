@@ -10,10 +10,12 @@ type_parola arrayParole[1000000];  // Array contiene tutte le singole istanze de
 int numeroDistinctParoleTesto = 0; // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
 int numeroParoleTotali = 0;
 
+char stringone[1000000]; // array in cui viene
 Record arrayrecordParole[1000000];
 
-void popolaArrayParole(FILE *fin);
+void popolaArrayParole(char *fin);
 void popolaArrayRecordOccorrenze(FILE *fin);
+char *preparaStream(FILE *fin);
 // int parolaRegistrata(char parola[], Record *record, int numeroParoleTrovate);
 // void stampaStatistiche(Record *arrayRecord, int numeroParoleTrovate);
 
@@ -93,13 +95,13 @@ void leggiFile(FILE *fin)
     char parolaSuccessiva[_MAX_LENGTH_WORD_] = "";
 
     printf("\nstarting");
-
+    char *filePreprocessato = preparaStream(fin);
     /*
     prima lettura del file:
     carico tutte le parole distinte in un array arrayParole[]
     es: arraParole{. quel ramo del lago di como , ...}
     */
-    popolaArrayParole(fin);
+    popolaArrayParole(filePreprocessato);
 
     printf("\n\n");
     for (int i = 0; i < numeroDistinctParoleTesto; i++)
@@ -110,10 +112,51 @@ void leggiFile(FILE *fin)
     printf("\n\n");
     for (int j = 0; j < 200; j++)
     {
-        printf("%s ",arrayParole[j]);
+        printf("%s ", arrayParole[j]);
         fflush(stdout);
     }
     popolaArrayRecordOccorrenze(fin);
+}
+
+/*
+il metodo legge il file e copia tutte le parole nell'array stringone eseguendo le seguenti correzioni:
+1- inserisce spazi prima e dopo la punteggiatura
+2- elimina doppi spazi
+al termine dell'elaborazione ciascuna parola o segno di punteggiatura sono separati da uno spazio
+*/
+char *preparaStream(FILE *fin)
+{
+    // TO DO: rimuovere i doppi spazi//
+    char c;
+    int index = 0;
+
+    while ((c = fgetc(fin)) != EOF)
+    {
+        if (isPunteggiatura(c))
+        {
+            appendCharToString(stringone, ' ', index);
+            index++;
+            appendCharToString(stringone, c, index);
+            index++;
+            appendCharToString(stringone, ' ', index);
+            index++;
+        }
+        else
+        {
+            appendCharToString(stringone, c, index);
+            index++;
+        }
+    }
+    appendCharToString(stringone, '\0', index);
+
+    for (int i = 0; i < 100; i++)
+    {
+        printf("%c", stringone[i]);
+        fflush(stdout);
+    }
+    return stringone;
+
+    // return ". Quel ramo del lago di Como , che lago volge lago , , a mezzogiorno . ";
 }
 /* seconda lettura del file: popolo l'array di record
 per ciascuna parola che leggo nel file:
@@ -123,6 +166,7 @@ per ciascuna parola che leggo nel file:
            - se non è presente inserisco l'indice in coda all'array
     da terminare per le parole successive e le occorrenze
 */
+
 void popolaArrayRecordOccorrenze(FILE *fin)
 {
     char c;
@@ -188,18 +232,16 @@ Metodo per la prima lettura del file.
 il metodo legge il file fino alla fine e scrive tutte le parole trovate in un distinctArray
 */
 
-void popolaArrayParole(FILE *fin)
+void popolaArrayParole(char *fin)
 {
     char c;
     int indexChar = 0;
-    type_parola parola = ".\0";
-    inserisciParola(arrayParole, parola, numeroDistinctParoleTesto);
-    numeroDistinctParoleTesto++;
+    int indexFin = 0;
+    type_parola parola;
 
-    pulisciStringa(parola, _MAX_LENGTH_WORD_);
-    while ((c = fgetc(fin)) != EOF)
+    while ((c = (fin[indexFin])) != '\0')
     {
-        if (isSeparator(c) && strcmp(parola, " ") != 0)
+        if (isSeparator(c))
         {
             /*
             se ho trovato un separatore ho una nuova parola e la inserisco nell'array
@@ -215,30 +257,6 @@ void popolaArrayParole(FILE *fin)
             pulisciStringa(parola, _MAX_LENGTH_WORD_);
             indexChar = 0;
         }
-        else if (isPunteggiatura(c))
-        {
-            numeroParoleTotali++;
-            appendCharToString(parola, '\0', indexChar);
-            char sPunteggiatura[31];
-            appendCharToString(sPunteggiatura, c, 0);
-            appendCharToString(sPunteggiatura, '\0', 1);
-
-            //  printf("\nPunteggiaura!!  %c",c);
-            // se ho trovato un segno di punteggiatura salvo il segno e la parola nell'array
-            if (cercaParola(arrayParole, parola, numeroDistinctParoleTesto) < 0)
-            {
-                inserisciParola(arrayParole, parola, numeroDistinctParoleTesto);
-                numeroDistinctParoleTesto++;
-            }
-
-            if (cercaParola(arrayParole, sPunteggiatura, numeroDistinctParoleTesto) < 0)
-            {
-                inserisciParola(arrayParole, sPunteggiatura, numeroDistinctParoleTesto);
-                numeroDistinctParoleTesto++;
-            }
-            pulisciStringa(parola, _MAX_LENGTH_WORD_);
-            indexChar = 0;
-        }
         else
         {
             if (indexChar < _MAX_LENGTH_WORD_)
@@ -247,6 +265,7 @@ void popolaArrayParole(FILE *fin)
                 indexChar++;
             }
         }
+        indexFin++;
     }
 }
 
