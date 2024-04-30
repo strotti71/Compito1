@@ -3,22 +3,20 @@
 #include <string.h>
 #include "occorrenza.h"
 
-
 /*
 Metodo per la creazione di un nuovo record.
 */
 Record *inserisciRecord(char parola[_MAX_LENGTH_WORD_], type_parola parolaSuccessiva)
 {
-
     Record *r = (Record *)malloc(sizeof(Record));
     if (r == NULL)
         printf("ERRORE");
     Occorrenza *occ = (Occorrenza *)malloc(sizeof(Occorrenza));
     if (occ == NULL)
         printf("ERRORE");
-   // strcpy(r->parola, parola);
- 
- //   strcpy(r->occorrenze[0].parolaSuccessiva, parolaSuccessiva);
+    // strcpy(r->parola, parola);
+
+    //   strcpy(r->occorrenze[0].parolaSuccessiva, parolaSuccessiva);
     return r;
 }
 
@@ -37,8 +35,6 @@ int cercaParola(type_parola *a, type_parola parolaCercata, int lunghezzaArray)
     }
     return -1;
 }
-
-    
 
 /*
 metodo per l'inserimento di una parola nell'array*/
@@ -59,5 +55,5 @@ void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray)
      }*/
     printf("\033[H\033[J%d--> %s", lunghezzaArray, p);
     fflush(stdout);
-    strcpy(a[(lunghezzaArray )], p);
+    strcpy(a[(lunghezzaArray)], p);
 }

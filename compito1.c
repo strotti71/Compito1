@@ -5,6 +5,17 @@
 #include "fileHandler.h"
 #include "stringHandler.h"
 #include "occorrenza.h"
+#include "printer.h"
+
+/*
+1) Apro il file di input
+2) copio il contenuto del file in  array(char) fileNormalizzato che ha le seguenti proprietà
+    - sono stati rimossi tutti i doppi spazi
+    - la punteggiatura viene separata dalle parole precedenti e seguenti tramite uno spazio
+3) chiudo il file di input
+4) creo arrayParole che contiene le singole istanze di tutte le parole
+
+*/
 
 type_parola arrayParole[1000000];  // Array contiene tutte le singole istanze delle parole
 int numeroDistinctParoleTesto = 0; // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
@@ -23,6 +34,8 @@ char *getNomeFile(int args, char *argv[]); // funzione che restituisce il nome f
 void leggiFile(FILE *fin);
 
 char nomeFile[] = "manzoni.txt"; // file di testo di default
+
+char *fileNormalizzato;
 
 int main(int args, char *argv[])
 {
@@ -53,6 +66,19 @@ int main(int args, char *argv[])
         printf("\nChiudo il file %s\n", nomeFile);
         fclose(fin);
     }
+
+    popolaArrayParole(fileNormalizzato);
+
+    printf("\n\n");
+
+    stampaArray(arrayParole, numeroDistinctParoleTesto);
+
+    printf("\n\nNumero Parole distinte: %d\nNumero Parole Totali: %d\n", numeroDistinctParoleTesto, numeroParoleTotali);
+    fflush(stdout);
+
+    esportaCsv(arrayParole, "export.csv");
+    // popolaArrayRecordOccorrenze(fin);
+
     return (0);
 }
 
@@ -94,24 +120,13 @@ void leggiFile(FILE *fin)
     char parolaSuccessiva[_MAX_LENGTH_WORD_] = "";
 
     printf("\nstarting");
-    char *filePreprocessato = preparaStream(fin);
+    fileNormalizzato = preparaStream(fin);
 
     /*
       lettura dell'array pre-processato:
       carico tutte le parole distinte in un array arrayParole[]
       es: arrayParole{. quel ramo del lago di como , ...}
       */
-
-    popolaArrayParole(filePreprocessato);
-    printf("\n\n");
-    for (int i = 0; i < numeroDistinctParoleTesto; i++)
-        printf("(%d)%s ", i, arrayParole[i]);
-
-    printf("\n\nNumero Parole distinte: %d\n\nNumero Parole Totali: %d\n\n", numeroDistinctParoleTesto, numeroParoleTotali);
-    fflush(stdout);
-
-    esportaCsv(arrayParole, "export.csv");
-    // popolaArrayRecordOccorrenze(fin);
 }
 
 /*
