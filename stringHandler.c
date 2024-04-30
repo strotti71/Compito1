@@ -32,7 +32,7 @@ int isSeparator(char c)
 metodo che indivisua se il carattere è un carattere di punteggiatura*/
 int isPunteggiatura(char c)
 {
-    return c == ',' || c == '.' || c == '!'|| c == '?';
+    return c == ',' || c == ';' || c == '.' || c == '!' || c == '?';
 }
 
 /*
@@ -51,7 +51,7 @@ char *appendCharToString(char *s, char c)
     return (sTemp);
 }*/
 
-char* appendCharToString(char *s, char c, int i)
+char *appendCharToString(char *s, char c, int i)
 {
     s[i] = c;
 }

@@ -27,7 +27,6 @@ char nomeFile[] = "manzoni.txt"; // file di testo di default
 int main(int args, char *argv[])
 {
     FILE *fin;
-
     /**
      * APERTURA DEL FILE
      */
@@ -96,13 +95,14 @@ void leggiFile(FILE *fin)
 
     printf("\nstarting");
     char *filePreprocessato = preparaStream(fin);
-    /*
-    prima lettura del file:
-    carico tutte le parole distinte in un array arrayParole[]
-    es: arraParole{. quel ramo del lago di como , ...}
-    */
-    popolaArrayParole(filePreprocessato);
 
+    /*
+      lettura dell'array pre-processato:
+      carico tutte le parole distinte in un array arrayParole[]
+      es: arraParole{. quel ramo del lago di como , ...}
+      */
+
+    popolaArrayParole(filePreprocessato);
     printf("\n\n");
     for (int i = 0; i < numeroDistinctParoleTesto; i++)
         printf("(%d)%s ", i, arrayParole[i]);
@@ -115,7 +115,7 @@ void leggiFile(FILE *fin)
         printf("%s ", arrayParole[j]);
         fflush(stdout);
     }
-    popolaArrayRecordOccorrenze(fin);
+    // popolaArrayRecordOccorrenze(fin);
 }
 
 /*
@@ -127,37 +127,47 @@ al termine dell'elaborazione ciascuna parola o segno di punteggiatura sono separ
 char *preparaStream(FILE *fin)
 {
     // TO DO: rimuovere i doppi spazi//
+    // TO DO 2: messo temporaneamente ~ in coda all'array
     char c;
+    char cPrec = ' ';
     int index = 0;
 
     while ((c = fgetc(fin)) != EOF)
     {
         if (isPunteggiatura(c))
         {
-            appendCharToString(stringone, ' ', index);
-            index++;
+            if (cPrec != ' ')
+            {
+                appendCharToString(stringone, ' ', index);
+                index++;
+                cPrec = ' ';
+            }
             appendCharToString(stringone, c, index);
             index++;
             appendCharToString(stringone, ' ', index);
             index++;
+            cPrec = ' ';
         }
         else
         {
-            appendCharToString(stringone, c, index);
+            // se il carattere precedente e il carattere letto sono entrambi spazi,
+            // non inserisco il carattere per evetiare doppi spazi inutili
+            if ((cPrec == c) == ' ')
+            {
+                printf("salto");
+            }
+            else
+                appendCharToString(stringone, c, index);
             index++;
+            cPrec = c;
         }
     }
-    appendCharToString(stringone, '\0', index);
-
-    for (int i = 0; i < 100; i++)
-    {
-        printf("%c", stringone[i]);
-        fflush(stdout);
-    }
+    stringone[++index] = '~';
     return stringone;
 
     // return ". Quel ramo del lago di Como , che lago volge lago , , a mezzogiorno . ";
 }
+
 /* seconda lettura del file: popolo l'array di record
 per ciascuna parola che leggo nel file:
     - cerco l'indice sull'arrayParole
