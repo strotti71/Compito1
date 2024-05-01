@@ -1,11 +1,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-/**/
+
 #include "fileHandler.h"
 #include "stringHandler.h"
 #include "occorrenza.h"
 #include "printer.h"
+
+/*
+#include "fileHandler.c"
+#include "stringHandler.c"
+#include "occorrenza.c"
+#include "printer.c"
 
 /*
 1) Apro il file di input
@@ -25,7 +31,7 @@ char stringone[1000000]; // array in cui viene
 Record arrayrecordParole[1000000];
 
 void popolaArrayParole(char *fin);
-void popolaArrayRecordOccorrenze(FILE *fin);
+void popolaArrayRecordOccorrenze(char *fin);
 char *preparaStream(FILE *fin);
 // int parolaRegistrata(char parola[], Record *record, int numeroParoleTrovate);
 // void stampaStatistiche(Record *arrayRecord, int numeroParoleTrovate);
@@ -33,7 +39,7 @@ char *preparaStream(FILE *fin);
 char *getNomeFile(int args, char *argv[]); // funzione che restituisce il nome file da argomento di avvio
 void leggiFile(FILE *fin);
 
-char nomeFile[] = "manzoni.txt"; // file di testo di default
+char nomeFile[] = "ciao.txt"; // file di testo di default
 
 char *fileNormalizzato;
 
@@ -76,8 +82,10 @@ int main(int args, char *argv[])
     printf("\n\nNumero Parole distinte: %d\nNumero Parole Totali: %d\n", numeroDistinctParoleTesto, numeroParoleTotali);
     fflush(stdout);
 
+    // costruisco l'arrau di record che contengono i conteggi delle parole successive
+    popolaArrayRecordOccorrenze(fileNormalizzato);
+
     esportaCsv(arrayParole, "export.csv");
-    // popolaArrayRecordOccorrenze(fin);
 
     return (0);
 }
@@ -89,7 +97,7 @@ La funzione restituisce il nome file
 */
 char *getNomeFile(int args, char *argv[])
 {
-    return (args > 1 ? argv[1] : "manzoni.txt");
+    return (args > 1 ? argv[1] : nomeFile);
 }
 
 /*
@@ -183,48 +191,55 @@ per ciascuna parola che leggo nel file:
     da terminare per le parole successive e le occorrenze
 */
 
-void popolaArrayRecordOccorrenze(FILE *fin)
+void popolaArrayRecordOccorrenze(char *testo)
 {
     char c;
     int indexChar = 0;
+    int indexTesto = 0;
 
     int indiceParolaInArraydistinctParole;
-    type_parola parolaPrecedente = ".";
+    type_parola parolaPrecedente = " ";
     type_parola parolaSuccessiva;
 
-    rewind(fin);
-    /*
-        while (getWord(parolaPrecedente, 31, fin) != EOF)
-            printf("\n-----%s", parolaPrecedente);
-    */
-    while ((c = fgetc(fin)) != EOF)
+    pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
+    pulisciStringa(parolaSuccessiva, _MAX_LENGTH_WORD_);
+
+    while ((testo[indexTesto]) != '~')
     {
+        c = testo[indexTesto];
         if (isSeparator(c))
         {
-            indiceParolaInArraydistinctParole = cercaParola(arrayParole, parolaPrecedente, numeroDistinctParoleTesto);
-            printf("\nHo trovato la parola %s all'indice %d", parolaPrecedente, indiceParolaInArraydistinctParole);
+            // chiudo la parola che sto costruendo
+            appendCharToString(parolaSuccessiva, '\0', indexChar);
+            indiceParolaInArraydistinctParole = cercaParola(arrayParole, parolaSuccessiva, numeroDistinctParoleTesto);
+            printf("\nHo trovato la parola %s all'indice %d", parolaSuccessiva, indiceParolaInArraydistinctParole);
+            fflush(stdout);
             pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
+            strcpy(parolaPrecedente, parolaSuccessiva);
+            pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
+            indexTesto++;
             indexChar = 0;
         }
-        else if (isPunteggiatura(c))
-        {
-            indiceParolaInArraydistinctParole = cercaParola(arrayParole, parolaPrecedente, numeroDistinctParoleTesto);
-            printf("\nHo trovato la parola %s all'indice %d", parolaPrecedente, indiceParolaInArraydistinctParole);
-            pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
-            appendCharToString(parolaPrecedente, c, 0);
-            appendCharToString(parolaPrecedente, '\0', 1);
-            indiceParolaInArraydistinctParole = cercaParola(arrayParole, parolaPrecedente, numeroDistinctParoleTesto);
-            printf("\nHo trovato la parola %s all'indice %d", parolaPrecedente, indiceParolaInArraydistinctParole);
+        /*  else if (isPunteggiatura(c))
+          {
+              indiceParolaInArraydistinctParole = cercaParola(arrayParole, parolaPrecedente, numeroDistinctParoleTesto);
+              printf("\nHo trovato la parola %s all'indice %d", parolaPrecedente, indiceParolaInArraydistinctParole);
+              pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
+              appendCharToString(parolaPrecedente, c, 0);
+              appendCharToString(parolaPrecedente, '\0', 1);
+              indiceParolaInArraydistinctParole = cercaParola(arrayParole, parolaPrecedente, numeroDistinctParoleTesto);
+              printf("\nHo trovato la parola %s all'indice %d", parolaPrecedente, indiceParolaInArraydistinctParole);
 
-            pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
-            indexChar = 0;
-        }
+              pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
+              indexChar = 0;
+          }*/
         else
         {
             if (indexChar < _MAX_LENGTH_WORD_)
             {
-                parolaPrecedente[indexChar] = c;
+                parolaSuccessiva[indexChar] = c;
                 indexChar++;
+                indexTesto++;
             }
         }
     }
