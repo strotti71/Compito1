@@ -6,7 +6,6 @@
 #include "stringHandler.h"
 #include "occorrenza.h"
 #include "printer.h"
-
 /*
 #include "fileHandler.c"
 #include "stringHandler.c"
@@ -82,8 +81,11 @@ int main(int args, char *argv[])
     printf("\n\nNumero Parole distinte: %d\nNumero Parole Totali: %d\n", numeroDistinctParoleTesto, numeroParoleTotali);
     fflush(stdout);
 
-    // costruisco l'arrau di record che contengono i conteggi delle parole successive
+    // costruisco l'array di record che contengono i conteggi delle parole successive
     popolaArrayRecordOccorrenze(fileNormalizzato);
+
+    for (int i = 0; i < 1000; i++)
+        printf("-%d-", arrayrecordParole[i].parola);
 
     esportaCsv(arrayParole, "export.csv");
 
@@ -198,6 +200,7 @@ void popolaArrayRecordOccorrenze(char *testo)
     int indexTesto = 0;
 
     int indiceParolaInArraydistinctParole;
+    int indiceParolaInArrayStructParole = 0;
     type_parola parolaPrecedente = " ";
     type_parola parolaSuccessiva;
 
@@ -210,9 +213,16 @@ void popolaArrayRecordOccorrenze(char *testo)
         if (isSeparator(c))
         {
             // chiudo la parola che sto costruendo
+
             appendCharToString(parolaSuccessiva, '\0', indexChar);
             indiceParolaInArraydistinctParole = cercaParola(arrayParole, parolaSuccessiva, numeroDistinctParoleTesto);
             printf("\nHo trovato la parola %s all'indice %d", parolaSuccessiva, indiceParolaInArraydistinctParole);
+
+            // cerco l'indice della parola nell arrayRecordParole:
+            //   se non trovo inserisco l'indice
+            int ind = cercaIntero(arrayrecordParole, indiceParolaInArraydistinctParole, indiceParolaInArrayStructParole);
+            if (ind < 0)
+                arrayrecordParole[indiceParolaInArrayStructParole].parola = indiceParolaInArraydistinctParole;
             fflush(stdout);
             pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
             strcpy(parolaPrecedente, parolaSuccessiva);
