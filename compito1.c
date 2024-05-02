@@ -63,7 +63,8 @@ int main(int args, char *argv[])
     }
 
     // inizio la lettura del file:
-
+    // la funzione crea un *char filenormalizzato in cui
+    // tutte le parole e i segni di interpunzione sono separati da uno spazio
     leggiFile(fin);
 
     // chiudo il file
@@ -73,14 +74,17 @@ int main(int args, char *argv[])
         fclose(fin);
     }
 
+    // la funzione prende il file normalizzato e scrive arrayParole:
+    // un array di parole distinte presenti nel testo
     popolaArrayParole(fileNormalizzato);
 
+    // creo arrayRecordParole dimensionato con il numero di parole distinte presenti nel testo
     arrayRecordParole = calloc(numeroDistinctParoleTesto, sizeof(Record));
     arrayRecordParole->numeroParoleSuccessive = 0;
 
     printf("\n\n");
 
-    stampaArray(arrayParole, numeroDistinctParoleTesto);
+    stampaArray(arrayParole, numeroDistinctParoleTesto, "Parole distinte del testo: ");
 
     printf("\n\nNumero Parole distinte: %d\nNumero Parole Totali: %d\n", numeroDistinctParoleTesto, numeroParoleTotali);
     fflush(stdout);
