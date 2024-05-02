@@ -27,6 +27,9 @@ type_parola arrayParole[1000000];  // Array contiene tutte le singole istanze de
 int numeroDistinctParoleTesto = 0; // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
 int numeroParoleTotali = 0;
 
+char *fileNormalizzato;    // file riportato su array con eliminazione dei doppi spazi e separazione di tutti i caratteri di punteggiatura
+int nCharFileNormalizzato; // numero caratteri del file normalizzato
+
 char stringone[1000000]; // array in cui viene
 Record *arrayRecordParole;
 
@@ -40,8 +43,6 @@ char *getNomeFile(int args, char *argv[]); // funzione che restituisce il nome f
 void leggiFile(FILE *fin);
 
 char nomeFile[] = "ciao.txt"; // file di testo di default
-
-char *fileNormalizzato;
 
 int main(int args, char *argv[])
 {
@@ -77,17 +78,24 @@ int main(int args, char *argv[])
     // la funzione prende il file normalizzato e scrive arrayParole:
     // un array di parole distinte presenti nel testo
     popolaArrayParole(fileNormalizzato);
+    stampaArray(arrayParole, numeroDistinctParoleTesto, "\nParole distinte del testo: ");
+    printf("\nNumero Parole distinte: %d\nNumero Parole Totali: %d\n", numeroDistinctParoleTesto, numeroParoleTotali);
 
     // creo arrayRecordParole dimensionato con il numero di parole distinte presenti nel testo
     arrayRecordParole = calloc(numeroDistinctParoleTesto, sizeof(Record));
     arrayRecordParole->numeroParoleSuccessive = 0;
 
-    printf("\n\n");
-
-    stampaArray(arrayParole, numeroDistinctParoleTesto, "Parole distinte del testo: ");
-
-    printf("\n\nNumero Parole distinte: %d\nNumero Parole Totali: %d\n", numeroDistinctParoleTesto, numeroParoleTotali);
-    fflush(stdout);
+    for (int i = 0; i < numeroDistinctParoleTesto; i++)
+    {
+        printf("%d ", arrayRecordParole->numeroParoleSuccessive);
+        fflush(stdout);
+    }
+    printf("\n");
+    for (int i = 0; i < nCharFileNormalizzato; i++)
+    {
+        char ch = (fileNormalizzato[i]);
+        printf("%c", ch);
+    }
 
     // costruisco l'array di record che contengono i conteggi delle parole successive
     popolaArrayRecordOccorrenze(fileNormalizzato);
@@ -161,7 +169,7 @@ char *preparaStream(FILE *fin)
     // TO DO 2: messo temporaneamente ~ in coda all'array
     char c;
     char cPrec = ' ';
-    int index = 0;
+    nCharFileNormalizzato = 0;
 
     while ((c = fgetc(fin)) != EOF)
     {
@@ -169,14 +177,14 @@ char *preparaStream(FILE *fin)
         {
             if (cPrec != ' ')
             {
-                appendCharToString(stringone, ' ', index);
-                index++;
+                appendCharToString(stringone, ' ', nCharFileNormalizzato);
+                nCharFileNormalizzato++;
                 cPrec = ' ';
             }
-            appendCharToString(stringone, c, index);
-            index++;
-            appendCharToString(stringone, ' ', index);
-            index++;
+            appendCharToString(stringone, c, nCharFileNormalizzato);
+            nCharFileNormalizzato++;
+            appendCharToString(stringone, ' ', nCharFileNormalizzato);
+            nCharFileNormalizzato++;
             cPrec = ' ';
         }
         else
@@ -184,12 +192,11 @@ char *preparaStream(FILE *fin)
             // se il carattere precedente e il carattere letto sono entrambi spazi,
             // non inserisco il carattere per evetiare doppi spazi inutili
             if ((cPrec == c) != ' ')
-                appendCharToString(stringone, c, index);
-            index++;
+                appendCharToString(stringone, c, nCharFileNormalizzato);
+            nCharFileNormalizzato++;
             cPrec = c;
         }
     }
-    stringone[++index] = '~';
     return stringone;
 
     // return ". Quel ramo del lago di Como , che lago volge lago , , a mezzogiorno . ";
@@ -217,10 +224,10 @@ void popolaArrayRecordOccorrenze(char *testo)
     type_parola parolaPrecedente = ".";
     type_parola parolaSuccessiva;
 
-    pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
+    // pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
     pulisciStringa(parolaSuccessiva, _MAX_LENGTH_WORD_);
 
-    while ((testo[indexTesto]) != '~')
+    while (indexTesto < nCharFileNormalizzato)
     {
         c = testo[indexTesto];
         if (isSeparator(c))
@@ -230,6 +237,7 @@ void popolaArrayRecordOccorrenze(char *testo)
             indiceSuccessiva = cercaParola(arrayParole, parolaSuccessiva, numeroDistinctParoleTesto);
             //  printf("\nHo trovato la parola %s all'indice %d", parolaSuccessiva, indiceSuccessiva);
             indicePrecedente = cercaParola(arrayParole, parolaPrecedente, numeroDistinctParoleTesto);
+
             Record occorrenzeParolaPrecedente = arrayRecordParole[indicePrecedente];
             int trovato = 0;
             for (int i = 0; (i < occorrenzeParolaPrecedente.numeroParoleSuccessive && !trovato); i++)
@@ -248,7 +256,7 @@ void popolaArrayRecordOccorrenze(char *testo)
                 int newCountOccorrenze = occorrenzeParolaPrecedente.numeroParoleSuccessive + 1;
                 Occorrenza *newOcc = malloc(sizeof(Occorrenza) * newCountOccorrenze);
 
-                for (int i = 0; i < occorrenzeParolaPrecedente.numeroParoleSuccessive; i++)
+                for (int i = 0; i < newCountOccorrenze - 1; i++)
 
                 {
                     newOcc[i] = occorrenzeParolaPrecedente.occorrenze[i];
@@ -261,7 +269,7 @@ void popolaArrayRecordOccorrenze(char *testo)
                 occorrenzeParolaPrecedente.occorrenze = newOcc;
                 occorrenzeParolaPrecedente.numeroParoleSuccessive = 1;
                 arrayRecordParole[indiceParolaInArrayStructParole - 1] = occorrenzeParolaPrecedente;
-                printf("\n%s-%s Creo array: %d", parolaPrecedente, parolaSuccessiva, arrayRecordParole[indiceParolaInArrayStructParole].numeroParoleSuccessive);
+                printf("\nPrecedente:'%s'\tSuccessiva:'%s':\t num parole successive:%d", parolaPrecedente, parolaSuccessiva, arrayRecordParole->numeroParoleSuccessive);
 
                 indiceParolaInArrayStructParole++;
             }
