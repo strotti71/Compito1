@@ -12,7 +12,7 @@ struttura per registrare un'occorrenza di parola successiva.
 typedef struct
 {
     int parolaSuccessiva;
-    double percentuale;
+    int numeroOccorrenze;
 } Occorrenza;
 
 /*
@@ -27,9 +27,8 @@ Struttra per registrare i dati di ciascuna parola.
 */
 typedef struct
 {
-    int parola;
-    Occorrenza occorrenze[1];
+    Occorrenza *occorrenze;
     int numeroParoleSuccessive;
 } Record;
 
-int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);
+// int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);
