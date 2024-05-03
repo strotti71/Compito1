@@ -5,9 +5,9 @@
 
 #include "fileHandler.h"
 #include "stringHandler.h"
-#include "occorrenza.h"
+// #include "occorrenza.h"
 #include "printer.h"
-/*
+
 #include "fileHandler.c"
 #include "stringHandler.c"
 #include "occorrenza.c"
@@ -100,7 +100,7 @@ int main(int args, char *argv[])
     // costruisco l'array di record che contengono i conteggi delle parole successive
     popolaArrayRecordOccorrenze(fileNormalizzato);
 
-    for (int i = 0; i < 14; i++)
+    for (int i = 0; i < numeroParoleTotali; i++)
     {
         printf("\n%s  (posizione = %d)  numeroParoleSuccessive: %d", arrayParole[i], i, arrayRecordParole[i].numeroParoleSuccessive);
         for (int j = 0; j < arrayRecordParole[i].numeroParoleSuccessive; j++)
@@ -191,11 +191,14 @@ char *preparaStream(FILE *fin)
         {
             // se il carattere precedente e il carattere letto sono entrambi spazi,
             // non inserisco il carattere per evetiare doppi spazi inutili
+            c = tolower(c);
             if ((cPrec == c) != ' ')
                 appendCharToString(stringone, c, nCharFileNormalizzato);
             nCharFileNormalizzato++;
             cPrec = c;
         }
+        printf("%c", c);
+        fflush(stdout);
     }
     return stringone;
 
@@ -256,19 +259,19 @@ void popolaArrayRecordOccorrenze(char *testo)
                 int newCountOccorrenze = occorrenzeParolaPrecedente.numeroParoleSuccessive + 1;
                 Occorrenza *newOcc = malloc(sizeof(Occorrenza) * newCountOccorrenze);
 
-                for (int i = 0; i < newCountOccorrenze - 1; i++)
+                for (int i = 0; i < occorrenzeParolaPrecedente.numeroParoleSuccessive; i++)
 
                 {
                     newOcc[i] = occorrenzeParolaPrecedente.occorrenze[i];
                 }
 
-                newOcc[newCountOccorrenze - 1].parolaSuccessiva = indiceSuccessiva;
-                newOcc[newCountOccorrenze - 1].numeroOccorrenze = 1;
+                newOcc[newCountOccorrenze].parolaSuccessiva = indiceSuccessiva;
+                newOcc[newCountOccorrenze].numeroOccorrenze = 1;
 
                 free(occorrenzeParolaPrecedente.occorrenze);
                 occorrenzeParolaPrecedente.occorrenze = newOcc;
                 occorrenzeParolaPrecedente.numeroParoleSuccessive = 1;
-                arrayRecordParole[indiceParolaInArrayStructParole - 1] = occorrenzeParolaPrecedente;
+                arrayRecordParole[indicePrecedente] = occorrenzeParolaPrecedente;
                 printf("\nPrecedente:'%s'\tSuccessiva:'%s':\t num parole successive:%d", parolaPrecedente, parolaSuccessiva, arrayRecordParole->numeroParoleSuccessive);
 
                 indiceParolaInArrayStructParole++;
