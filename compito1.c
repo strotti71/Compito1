@@ -2,12 +2,13 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "fileHandler.h"
 #include "stringHandler.h"
-// #include "occorrenza.h"
+#include "occorrenza.h"
 #include "printer.h"
-
+/*
 #include "fileHandler.c"
 #include "stringHandler.c"
 #include "occorrenza.c"
