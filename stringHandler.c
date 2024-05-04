@@ -46,7 +46,7 @@ char *appendCharToString(char *s, char c)
     sprintf(sTemp, "%s%c", s, c);
     return (sTemp);
 }*/
-char *appendCharToString(char *s, char c, int i)
+void appendCharToString(char *s, char c, int i)
 {
     s[i] = c;
 }

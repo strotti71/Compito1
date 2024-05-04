@@ -12,6 +12,7 @@ int apriFile(char *filename, FILE *f)
     {
         return 1;
     }
+    return 0;
 }
 
 /*

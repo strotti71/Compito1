@@ -68,8 +68,9 @@ void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray)
          a = realloc(a, sizeof(type_parola) * (1 + lunghezzaArray));
 
          strcpy(a[(lunghezzaArray + 1)], p);
-     }*/
+     }
     printf("\033[H\033[J%d--> %s", lunghezzaArray, p);
     fflush(stdout);
+    */
     strcpy(a[(lunghezzaArray)], p);
 }
