@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "stringHandler.h"
+// #include "occorrenza.h"
 
 int apriFile(char *filename, FILE *f);
-int esportaCsv(type_parola *source, char *fileName);
+int esportaCsv_old(type_parola *source, char *fileName);
+// int esportaCsv(Record *source, int len, char *fileName);
