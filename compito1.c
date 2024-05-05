@@ -8,7 +8,6 @@
 #include "stringHandler.h"
 #include "occorrenza.h"
 #include "printer.h"
-
 /*
 #include "fileHandler.c"
 #include "stringHandler.c"
@@ -39,6 +38,7 @@ void popolaArrayParole(char *fin);
 void popolaArrayRecordOccorrenze(char *fin);
 char *preparaStream(FILE *fin);
 int contaCaratteri(FILE *f);
+double calcolaOccorrenze(int n, int nTot);
 type_parola *getParola(type_parola *arrayPaole, int index);
 
 char *getNomeFile(int args, char *argv[]); // funzione che restituisce il nome file da argomento di avvio
@@ -97,13 +97,18 @@ int main(int args, char *argv[])
         fprintf(f, "\n%s", getParola(arrayParole, index));
         for (int j = 0; j < arrayRecordParole[index].numeroParoleSuccessive; j++)
         {
-            fprintf(f, ",%s,%d", getParola(arrayParole, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), arrayRecordParole[index].occorrenze[j].numeroOccorrenze);
+            double d = calcolaOccorrenze(arrayRecordParole[index].occorrenze[j].numeroOccorrenze, arrayRecordParole[index].numeroParoleSuccessive);
+            fprintf(f, ",%s,%f", getParola(arrayParole, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), d);
             fflush(stdout);
         }
-
         index++;
     }
     fclose(f);
+}
+
+double calcolaOccorrenze(int n, int nTot)
+{
+    return ((double)n / nTot);
 }
 
 /*
