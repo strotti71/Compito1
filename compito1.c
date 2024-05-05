@@ -87,31 +87,23 @@ int main(int args, char *argv[])
 
     // esportaCsv(arrayRecordParole, numeroParoleTotali, "export.csv");
     int index = 0;
-    while (index < numeroDistinctParoleTesto)
-    {
-        printf("\n%s: ", getParola(arrayParole, index));
-        for (int j = 0; j < arrayRecordParole[index].numeroParoleSuccessive; j++)
-        {
-            printf("segue: %s (%d))", getParola(arrayParole, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), arrayRecordParole[index].occorrenze[j].numeroOccorrenze);
-            fflush(stdout);
-        }
-
-        index++;
-    }
-
     FILE *f = fopen("export.csv", "w");
     if (f == NULL)
     {
         return -1;
     }
-    printf("\n\n");
-    index = 0;
     while (index < numeroDistinctParoleTesto)
     {
-        //    printf("%d", arrayRecordParole[index]);
-        fflush(stdout);
+        fprintf(f, "\n%s", getParola(arrayParole, index));
+        for (int j = 0; j < arrayRecordParole[index].numeroParoleSuccessive; j++)
+        {
+            fprintf(f, ",%s,%d", getParola(arrayParole, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), arrayRecordParole[index].occorrenze[j].numeroOccorrenze);
+            fflush(stdout);
+        }
+
         index++;
     }
+    fclose(f);
 }
 
 /*
