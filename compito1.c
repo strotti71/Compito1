@@ -172,19 +172,21 @@ char *preparaStream(FILE *fin)
 
     while ((c = fgetc(fin)) != EOF)
     {
+        if (nCharFileNormalizzato == 66)
+            printf("Stop");
         if ((c < 32) || (c > 126))
             printf("Trovato carattere sporco%c", c);
         if (isPunteggiatura(c))
         {
             if (cPrec != ' ')
             {
-                appendCharToString(stringone, ' ', nCharFileNormalizzato);
+                appendCharToString(stringone, 32, nCharFileNormalizzato);
                 nCharFileNormalizzato++;
                 cPrec = ' ';
             }
             appendCharToString(stringone, c, nCharFileNormalizzato);
             nCharFileNormalizzato++;
-            appendCharToString(stringone, ' ', nCharFileNormalizzato);
+            appendCharToString(stringone, 32, nCharFileNormalizzato);
             nCharFileNormalizzato++;
             cPrec = ' ';
         }
@@ -194,8 +196,10 @@ char *preparaStream(FILE *fin)
             // non inserisco il carattere per evetiare doppi spazi inutili
             c = tolower(c);
             if (!((cPrec == c) && (c == 32)))
+            {
                 appendCharToString(stringone, c, nCharFileNormalizzato);
-            nCharFileNormalizzato++;
+                nCharFileNormalizzato++;
+            }
             cPrec = c;
         }
     }
