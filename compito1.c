@@ -8,6 +8,7 @@
 #include "stringHandler.h"
 #include "occorrenza.h"
 #include "printer.h"
+
 /*
 #include "fileHandler.c"
 #include "stringHandler.c"
@@ -97,8 +98,8 @@ int main(int args, char *argv[])
         fprintf(f, "\n%s", getParola(arrayParole, index));
         for (int j = 0; j < arrayRecordParole[index].numeroParoleSuccessive; j++)
         {
-            double d = calcolaOccorrenze(arrayRecordParole[index].occorrenze[j].numeroOccorrenze, arrayRecordParole[index].numeroParoleSuccessive);
-            fprintf(f, ",%s,%f", getParola(arrayParole, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), d);
+            double d = calcolaOccorrenze(arrayRecordParole[index].occorrenze[j].numeroOccorrenze, arrayRecordParole[index].totaleParoleSuccessive);
+            fprintf(f, ",%s,%5.3f.", getParola(arrayParole, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), d);
             fflush(stdout);
         }
         index++;
@@ -109,6 +110,7 @@ int main(int args, char *argv[])
 double calcolaOccorrenze(int n, int nTot)
 {
     return ((double)n / nTot);
+    // return (n);
 }
 
 /*
@@ -136,7 +138,7 @@ char *getNomeFile(int args, char *argv[])
 void leggiFile(FILE *fin)
 {
     fileNormalizzato = preparaStream(fin);
-    // stampaArrayCaratteri(fileNormalizzato, nCharFileNormalizzato, "file normalizzato: ");
+    stampaArrayCaratteri(fileNormalizzato, nCharFileNormalizzato, "file normalizzato: ");
     /*
       lettura dell'array pre-processato:
       carico tutte le parole distinte in un array arrayParole[]
@@ -159,9 +161,6 @@ char *preparaStream(FILE *fin)
 
     while ((c = fgetc(fin)) != EOF)
     {
-        /*
-               if ((c < 32) || (c > 126))
-                   printf("Trovato carattere sporco%c", c);*/
         if (isPunteggiatura(c))
         {
             if (cPrec != ' ')
@@ -201,8 +200,6 @@ char *preparaStream(FILE *fin)
         }
     }
     return stringone;
-
-    // return ". Quel ramo del lago di Como , che lago volge lago , , a mezzogiorno . ";
 }
 
 /* seconda lettura del file: popolo l'array di record
@@ -243,6 +240,7 @@ void popolaArrayRecordOccorrenze(char *testo)
             // cerco l'indice della parola precedente
             indicePrecedente = cercaParola(arrayParole, parolaPrecedente, numeroDistinctParoleTesto);
             // creo un nuovo record copia del record corrispondente alla parola precedente
+
             Record RecordParolaTemp = arrayRecordParole[indicePrecedente];
 
             int trovato = 0;
@@ -250,9 +248,8 @@ void popolaArrayRecordOccorrenze(char *testo)
             {
                 if (RecordParolaTemp.occorrenze[i].parolaSuccessiva == indiceSuccessiva)
                 {
-                    printf("trovato occorrenza %d\n", RecordParolaTemp.occorrenze[i].parolaSuccessiva);
                     RecordParolaTemp.occorrenze[i].numeroOccorrenze = RecordParolaTemp.occorrenze[i].numeroOccorrenze + 1; //= arrayRecordParole->occorrenze[i].numeroOccorrenze + 1;
-                    RecordParolaTemp.numeroParoleSuccessive = RecordParolaTemp.numeroParoleSuccessive + 1;                 //= arrayRecordParole->numeroParoleSuccessive + 1;
+                    RecordParolaTemp.totaleParoleSuccessive++;                                                             //= arrayRecordParole->numeroParoleSuccessive + 1;
                     trovato = 1;
                     arrayRecordParole[indicePrecedente] = RecordParolaTemp;
                 }
@@ -271,6 +268,7 @@ void popolaArrayRecordOccorrenze(char *testo)
                 RecordParolaTemp.occorrenze[newCountOccorrenze - 1].parolaSuccessiva = indiceSuccessiva;
                 RecordParolaTemp.occorrenze[newCountOccorrenze - 1].numeroOccorrenze = 1;
                 RecordParolaTemp.numeroParoleSuccessive++;
+                RecordParolaTemp.totaleParoleSuccessive++;
 
                 /*                 Occorrenza *newOcc = (Occorrenza *)calloc(newCountOccorrenze, sizeof(Occorrenza));
                              for (int i = 0; i < RecordParolaTemp.numeroParoleSuccessive; i++)

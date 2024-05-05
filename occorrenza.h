@@ -29,6 +29,7 @@ typedef struct
 {
     Occorrenza occorrenze[100];
     int numeroParoleSuccessive;
+    int totaleParoleSuccessive;
 } Record;
 
 // int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);
