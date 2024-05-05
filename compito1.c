@@ -8,13 +8,13 @@
 #include "stringHandler.h"
 #include "occorrenza.h"
 #include "printer.h"
+
 /*
 #include "fileHandler.c"
 #include "stringHandler.c"
 #include "occorrenza.c"
 #include "printer.c"
-
-
+/*
 1) Apro il file di input
 2) copio il contenuto del file in  array(char) fileNormalizzato che ha le seguenti proprietà
     - sono stati rimossi tutti i doppi spazi
@@ -41,13 +41,10 @@ char *preparaStream(FILE *fin);
 int contaCaratteri(FILE *f);
 type_parola *getParola(type_parola *arrayPaole, int index);
 
-// int parolaRegistrata(char parola[], Record *record, int numeroParoleTrovate);
-// void stampaStatistiche(Record *arrayRecord, int numeroParoleTrovate);
-
 char *getNomeFile(int args, char *argv[]); // funzione che restituisce il nome file da argomento di avvio
 void leggiFile(FILE *fin);
 
-char nomeFile[] = "ciao.txt"; // file di testo di default
+char nomeFile[] = "tempo.txt"; // file di testo di default
 
 int main(int args, char *argv[])
 {
@@ -63,8 +60,6 @@ int main(int args, char *argv[])
         printf("\n\nImpossibile aprire il file %s.\nEsco\n", nomeFile);
         return 1;
     }
-    // nCharInput = contaCaratteri(fin);
-    // rewind(fin);
     printf("Numero caratteri nel testo: %d", nCharInput);
 
     // inizio la lettura del file:
@@ -91,10 +86,7 @@ int main(int args, char *argv[])
     popolaArrayRecordOccorrenze(fileNormalizzato);
 
     // esportaCsv(arrayRecordParole, numeroParoleTotali, "export.csv");
-    // esportaCsv(arrayRecordParole, numeroParoleTotali, "export.csv");
-
     int index = 0;
-
     while (index < numeroDistinctParoleTesto)
     {
         printf("\n%s: ", getParola(arrayParole, index));
@@ -170,10 +162,9 @@ char *preparaStream(FILE *fin)
 
     while ((c = fgetc(fin)) != EOF)
     {
-        if (nCharFileNormalizzato == 66)
-            printf("Stop");
-        if ((c < 32) || (c > 126))
-            printf("Trovato carattere sporco%c", c);
+        /*
+               if ((c < 32) || (c > 126))
+                   printf("Trovato carattere sporco%c", c);*/
         if (isPunteggiatura(c))
         {
             if (cPrec != ' ')
@@ -187,6 +178,17 @@ char *preparaStream(FILE *fin)
             appendCharToString(stringone, 32, nCharFileNormalizzato);
             nCharFileNormalizzato++;
             cPrec = ' ';
+        }
+
+        // caratteri < 40 sono spazi
+        else if (c < 32)
+        {
+            if (cPrec != ' ')
+            {
+                appendCharToString(stringone, 32, nCharFileNormalizzato);
+                nCharFileNormalizzato++;
+                cPrec = ' ';
+            }
         }
         else
         {
