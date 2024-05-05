@@ -36,6 +36,22 @@ int cercaParola(type_parola *a, type_parola parolaCercata, int lunghezzaArray)
     return -1;
 }
 
+/**
+ * metodo per la ricerca di una intero nell'array di record.
+ * se il numero è presente ne restituisce la posizione.
+ * se il numero non è presente restituisce -1
+
+int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray)
+{
+    for (int i = 0; i < lunghezzaArray; i++)
+    {
+        if (rec[i] == numeroCercato)
+            return i;
+    }
+    return -1;
+}
+*/
+
 /*
 metodo per l'inserimento di una parola nell'array*/
 void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray)
@@ -52,8 +68,9 @@ void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray)
          a = realloc(a, sizeof(type_parola) * (1 + lunghezzaArray));
 
          strcpy(a[(lunghezzaArray + 1)], p);
-     }*/
+     }
     printf("\033[H\033[J%d--> %s", lunghezzaArray, p);
     fflush(stdout);
+    */
     strcpy(a[(lunghezzaArray)], p);
 }

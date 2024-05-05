@@ -1,4 +1,5 @@
 
 #include "stringHandler.h"
 
-void stampaArray(type_parola *arr, int len);
+void stampaArrayParole(type_parola *arr, int len, char *s);
+void stampaArrayCaratteri(char *arr, int len, char *s);

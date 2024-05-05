@@ -1,6 +1,7 @@
 #include <string.h>
 #include "fileHandler.h"
-#include "stringHandler.h"
+
+// #include "stringHandler.h"
 
 /*
 LIBRERIA DI GESTIONE DEI FILE
@@ -12,6 +13,7 @@ int apriFile(char *filename, FILE *f)
     {
         return 1;
     }
+    return 0;
 }
 
 /*
@@ -21,7 +23,7 @@ il metodo accetta in input
     il nome file da scrivere
 
 Restituisce -1 se la scrittura del file è fallita*/
-int esportaCsv(type_parola *source, char *fileName)
+int esportaCsv_old(type_parola *source, char *fileName)
 {
     int j = 0;
     printf("\n\n STAMPO DA FUNZIONE Esporta...\n\n");
@@ -47,3 +49,37 @@ int esportaCsv(type_parola *source, char *fileName)
     }
     return 0;
 }
+
+char *getParolaFromnumber(int number)
+{
+    return "ciao";
+}
+/*
+int esportaCsv(Record *source, int len, char *fileName)
+{
+    // int j = 0;
+    int index = 0;
+    printf("\n\n STAMPO DA FUNZIONE Esporta...\n\n");
+    while (index < len)
+    {
+        printf("%d", source[index]);
+        fflush(stdout);
+        index++;
+    }
+
+    FILE *f = fopen(fileName, "w");
+    if (f == NULL)
+    {
+        return -1;
+    }
+    printf("\n\n");
+    index = 0;
+    while (index < len)
+    {
+        printf("%d", source[index]);
+        fflush(stdout);
+        index++;
+    }
+    return 0;
+}
+*/
