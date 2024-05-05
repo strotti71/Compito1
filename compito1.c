@@ -14,7 +14,7 @@
 #include "occorrenza.c"
 #include "printer.c"
 
-/*
+
 1) Apro il file di input
 2) copio il contenuto del file in  array(char) fileNormalizzato che ha le seguenti proprietà
     - sono stati rimossi tutti i doppi spazi
@@ -241,13 +241,6 @@ void popolaArrayRecordOccorrenze(char *testo)
 
             // cerco l'indice della parola precedente
             indicePrecedente = cercaParola(arrayParole, parolaPrecedente, numeroDistinctParoleTesto);
-
-            /*
-                        if (indiceSuccessiva == -1)
-                        {
-                            printf("??????????");
-                        }
-            */
             // creo un nuovo record copia del record corrispondente alla parola precedente
             Record RecordParolaTemp = arrayRecordParole[indicePrecedente];
 
@@ -257,9 +250,10 @@ void popolaArrayRecordOccorrenze(char *testo)
                 if (RecordParolaTemp.occorrenze[i].parolaSuccessiva == indiceSuccessiva)
                 {
                     printf("trovato occorrenza %d\n", RecordParolaTemp.occorrenze[i].parolaSuccessiva);
-                    RecordParolaTemp.occorrenze[i].numeroOccorrenze = arrayRecordParole->occorrenze[i].numeroOccorrenze + 1;
-                    RecordParolaTemp.numeroParoleSuccessive = arrayRecordParole->numeroParoleSuccessive + 1;
+                    RecordParolaTemp.occorrenze[i].numeroOccorrenze = RecordParolaTemp.occorrenze[i].numeroOccorrenze + 1; //= arrayRecordParole->occorrenze[i].numeroOccorrenze + 1;
+                    RecordParolaTemp.numeroParoleSuccessive = RecordParolaTemp.numeroParoleSuccessive + 1;                 //= arrayRecordParole->numeroParoleSuccessive + 1;
                     trovato = 1;
+                    arrayRecordParole[indicePrecedente] = RecordParolaTemp;
                 }
             }
             // non ho trovato occorrenza successiva:
@@ -273,8 +267,8 @@ void popolaArrayRecordOccorrenze(char *testo)
                 // printf("\n%s %s %d\n", parolaPrecedente, parolaSuccessiva, RecordParolaTemp.occorrenze[newCountOccorrenze].numeroOccorrenze);
                 // fflush(stdout);
 
-                RecordParolaTemp.occorrenze[newCountOccorrenze].parolaSuccessiva = indiceSuccessiva;
-                RecordParolaTemp.occorrenze[newCountOccorrenze].numeroOccorrenze = 1;
+                RecordParolaTemp.occorrenze[newCountOccorrenze - 1].parolaSuccessiva = indiceSuccessiva;
+                RecordParolaTemp.occorrenze[newCountOccorrenze - 1].numeroOccorrenze = 1;
                 RecordParolaTemp.numeroParoleSuccessive++;
 
                 /*                 Occorrenza *newOcc = (Occorrenza *)calloc(newCountOccorrenze, sizeof(Occorrenza));
@@ -334,7 +328,10 @@ void popolaArrayParole(char *fin)
     char c;
     int indexChar = 0;
     int indexFin = 0;
-    type_parola parola;
+    type_parola parola = ".";
+
+    inserisciParola(arrayParole, parola, numeroDistinctParoleTesto);
+    numeroDistinctParoleTesto++;
 
     for (int i = 0; i < nCharFileNormalizzato; i++)
     {
