@@ -95,7 +95,7 @@ int main(int args, char *argv[])
 
     int index = 0;
 
-    while (index < numeroParoleTotali)
+    while (index < numeroDistinctParoleTesto)
     {
         printf("\n%s: ", getParola(arrayParole, index));
         for (int j = 0; j < arrayRecordParole[index].numeroParoleSuccessive; j++)
@@ -114,7 +114,7 @@ int main(int args, char *argv[])
     }
     printf("\n\n");
     index = 0;
-    while (index < numeroParoleTotali)
+    while (index < numeroDistinctParoleTesto)
     {
         //    printf("%d", arrayRecordParole[index]);
         fflush(stdout);
@@ -146,10 +146,8 @@ char *getNomeFile(int args, char *argv[])
 */
 void leggiFile(FILE *fin)
 {
-
     fileNormalizzato = preparaStream(fin);
     // stampaArrayCaratteri(fileNormalizzato, nCharFileNormalizzato, "file normalizzato: ");
-
     /*
       lettura dell'array pre-processato:
       carico tutte le parole distinte in un array arrayParole[]
@@ -342,11 +340,27 @@ void popolaArrayParole(char *fin)
         c = (fin[indexFin]);
         if (!((c < 32) || (c > 126)))
         {
-            if (isSeparator(c) || isPunteggiatura(c))
+
+            if (isSeparator(c))
             {
                 /*
                 se ho trovato un separatore ho una nuova parola e la inserisco nell'array
                 */
+                appendCharToString(parola, '\0', indexChar);
+                numeroParoleTotali++;
+
+                if (cercaParola(arrayParole, parola, numeroDistinctParoleTesto) < 0)
+                {
+                    inserisciParola(arrayParole, parola, numeroDistinctParoleTesto);
+                    numeroDistinctParoleTesto++;
+                }
+                pulisciStringa(parola, _MAX_LENGTH_WORD_);
+                indexChar = 0;
+            }
+            else if (isPunteggiatura(c))
+            {
+                parola[indexChar] = c;
+                indexChar++;
                 appendCharToString(parola, '\0', indexChar);
                 numeroParoleTotali++;
 
