@@ -1,5 +1,5 @@
 CC=gcc 
 CFLAGS= 
-DEPS =  fileHandler.c stringHandler.c occorrenza.c compito1.c printer.c
+DEPS =  fileHandler.c stringHandler.c occorrenza.c Hal_s.c printer.c
 c:
-	$(CC)  $(CFLAGS) $(DEPS) -g -O0 -o a.out
+	$(CC)  $(CFLAGS) $(DEPS) -g -O0 -o hal
