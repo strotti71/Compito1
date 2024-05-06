@@ -91,7 +91,7 @@ int main(int args, char *argv[])
 
     // creo arrayRecordParole dimensionato con il numero di parole distinte presenti nel testo
     arrayRecordParole = calloc(n_DistinctParoleTesto, sizeof(Record));
-    arrayRecordParole->numeroParoleSuccessive = 0;
+    arrayRecordParole->n_ParoleSuccessive = 0;
 
     // costruisco l'array di record che contengono i conteggi delle parole successive
     popolaArrayRecordOccorrenze(fileNormalizzato);
@@ -106,9 +106,9 @@ int main(int args, char *argv[])
     while (index < n_DistinctParoleTesto)
     {
         fprintf(f, "\n%s", getParola(arrayParole, index));
-        for (int j = 0; j < arrayRecordParole[index].numeroParoleSuccessive; j++)
+        for (int j = 0; j < arrayRecordParole[index].n_ParoleSuccessive; j++)
         {
-            double d = calcolaOccorrenze(arrayRecordParole[index].occorrenze[j].numeroOccorrenze, arrayRecordParole[index].totaleParoleSuccessive);
+            double d = calcolaOccorrenze(arrayRecordParole[index].occorrenze[j].n_Occorrenze, arrayRecordParole[index].totaleParoleSuccessive);
             fprintf(f, ",%s,%5.3f.", getParola(arrayParole, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), d);
             fflush(stdout);
         }
@@ -254,12 +254,12 @@ void popolaArrayRecordOccorrenze(char *testo)
             Record RecordParolaTemp = arrayRecordParole[i_Precedente];
 
             int trovato = 0;
-            for (int i = 0; (i < RecordParolaTemp.numeroParoleSuccessive && !trovato); i++)
+            for (int i = 0; (i < RecordParolaTemp.n_ParoleSuccessive && !trovato); i++)
             {
                 if (RecordParolaTemp.occorrenze[i].parolaSuccessiva == i_Successiva)
                 {
-                    RecordParolaTemp.occorrenze[i].numeroOccorrenze = RecordParolaTemp.occorrenze[i].numeroOccorrenze + 1; //= arrayRecordParole->occorrenze[i].numeroOccorrenze + 1;
-                    RecordParolaTemp.totaleParoleSuccessive++;                                                             //= arrayRecordParole->numeroParoleSuccessive + 1;
+                    RecordParolaTemp.occorrenze[i].n_Occorrenze = RecordParolaTemp.occorrenze[i].n_Occorrenze + 1; //= arrayRecordParole->occorrenze[i].numeroOccorrenze + 1;
+                    RecordParolaTemp.totaleParoleSuccessive++;                                                     //= arrayRecordParole->n_ParoleSuccessive + 1;
                     trovato = 1;
                     arrayRecordParole[i_Precedente] = RecordParolaTemp;
                 }
@@ -268,7 +268,7 @@ void popolaArrayRecordOccorrenze(char *testo)
             if (!trovato)
             {
                 // 1 creo array più grande
-                int newCountOccorrenze = RecordParolaTemp.numeroParoleSuccessive + 1;
+                int newCountOccorrenze = RecordParolaTemp.n_ParoleSuccessive + 1;
 
                 // rialloco la memoria per arrayTemp.occorrenze[];
                 // RecordParolaTemp.occorrenze = realloc(RecordParolaTemp.occorrenze, newCountOccorrenze * sizeof(Occorrenza));
@@ -276,12 +276,12 @@ void popolaArrayRecordOccorrenze(char *testo)
                 // fflush(stdout);
 
                 RecordParolaTemp.occorrenze[newCountOccorrenze - 1].parolaSuccessiva = i_Successiva;
-                RecordParolaTemp.occorrenze[newCountOccorrenze - 1].numeroOccorrenze = 1;
-                RecordParolaTemp.numeroParoleSuccessive++;
+                RecordParolaTemp.occorrenze[newCountOccorrenze - 1].n_Occorrenze = 1;
+                RecordParolaTemp.n_ParoleSuccessive++;
                 RecordParolaTemp.totaleParoleSuccessive++;
 
                 /*                 Occorrenza *newOcc = (Occorrenza *)calloc(newCountOccorrenze, sizeof(Occorrenza));
-                             for (int i = 0; i < RecordParolaTemp.numeroParoleSuccessive; i++)
+                             for (int i = 0; i < RecordParolaTemp.n_ParoleSuccessive; i++)
 
                              {
                                  newOcc[i] = RecordParolaTemp.occorrenze[i];
@@ -294,9 +294,9 @@ void popolaArrayRecordOccorrenze(char *testo)
 */
 
                 // RecordParolaTemp.occorrenze = newOcc;
-                //   RecordParolaTemp.numeroParoleSuccessive++;
+                //   RecordParolaTemp.n_ParoleSuccessive++;
                 // arrayRecordParole[indicePrecedente] = RecordParolaTemp;
-                //  printf("\nPrecedente:'%s'\tSuccessiva:'%s':\t num parole successive:%d", parolaPrecedente, parolaSuccessiva, arrayRecordParole->numeroParoleSuccessive);
+                //  printf("\nPrecedente:'%s'\tSuccessiva:'%s':\t num parole successive:%d", parolaPrecedente, parolaSuccessiva, arrayRecordParole->n_ParoleSuccessive);
 
                 indiceParolaInArrayStructParole++;
 
