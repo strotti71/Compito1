@@ -8,7 +8,6 @@
 #include "stringHandler.h"
 #include "occorrenza.h"
 #include "printer.h"
-
 /*
 #include "fileHandler.c"
 #include "stringHandler.c"
