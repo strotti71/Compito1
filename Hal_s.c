@@ -6,9 +6,9 @@
 
 #include "fileHandler.h"
 #include "stringHandler.h"
-#include "occorrenza.h"
+// #include "occorrenza.h"
 #include "printer.h"
-/*
+
 #include "fileHandler.c"
 #include "stringHandler.c"
 #include "occorrenza.c"
@@ -44,10 +44,10 @@ type_parola arrayParole[10000]; // Array contiene tutte le singole istanze delle
 int n_DistinctParoleTesto = 0;  // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
 int n_ParoleTotali = 0;
 FILE *fin;
-char *fileNormalizzato;     // file riportato su array con eliminazione dei doppi spazi e separazione di tutti i caratteri di punteggiatura
-int n_CharFileNormalizzato; // numero caratteri del file normalizzato
+char *fileNormalizzato;      // file riportato su array con eliminazione dei doppi spazi e separazione di tutti i caratteri di punteggiatura
+int lenFileNormalizzato = 0; // lunghezza del file normalizzato
+int n_CharFileNormalizzato;  // numero caratteri del file normalizzato
 
-char stringone[10000]; // array in cui viene
 Record *arrayRecordParole;
 
 char nomeFile[] = "tempo.txt"; // file di testo di default
@@ -61,6 +61,7 @@ char nomeFile[] = "tempo.txt"; // file di testo di default
 void init();
 void leggiParametri(int args, char *argv[]);
 void preparaStream(FILE *fin, char *out);
+int inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato, int *lenFileNormalizzato);
 void popolaArrayParole(char *fin);
 void popolaArrayRecordOccorrenze(char *fin);
 
@@ -87,7 +88,7 @@ int main(int args, char *argv[])
     // la funzione crea un *char filenormalizzato in cui
     // tutte le parole e i segni di interpunzione sono separati da uno spazio
     preparaStream(fin, fileNormalizzato);
-    stampaArrayCaratteri(fileNormalizzato, n_CharFileNormalizzato, "file normalizzato: ");
+    stampaArrayCaratteri(fileNormalizzato, lenFileNormalizzato, "file normalizzato: ");
 
     // chiudo il file
     if (fin != NULL)
@@ -155,43 +156,49 @@ double calcolaOccorrenze(int n, int nTot)
     // return (n);
 }
 
-/*
+char *getNomeFile(int args, char *argv[])
+{
+    /*
 La funzione restituisce il nome file
     se è specificato il primo argomento in argv[] allora  l'argomento è il nome del file
     altrimenti viene restituito un file di default
 */
-char *getNomeFile(int args, char *argv[])
-{
     return (args > 1 ? argv[1] : nomeFile);
 }
 
 void preparaStream(FILE *fin, char *out)
 {
-    /*
- il metodo legge il file e copia tutte le parole nell'array stringone eseguendo le seguenti correzioni:
- 1- inserisce spazi prima e dopo la punteggiatura
- 2- elimina doppi spazi
- al termine dell'elaborazione ciascuna parola o segno di punteggiatura sono separati da uno spazio
- */
+    //********************************************************************************************************************
+    //*****il metodo legge il file e copia tutte le parole nell'array fileNormalizzato eseguendo le seguenti correzioni:
+    //*****1- conto i caratteri del file in input (serviranno per dimensionare fileNormalizzato
+    //*****1- inserisce spazi prima e dopo la punteggiatura
+    //*****2- elimina doppi spazi
+    //***** al termine dell'elaborazione ciascuna parola o segno di punteggiatura sono separati da uno spazio
+    //********************************************************************************************************************
     char c;
     char cPrec = ' ';
-    n_CharFileNormalizzato = 0;
 
-    out = malloc(sizeof(char) * 10000);
+    n_CharFileNormalizzato = 0;
+    lenFileNormalizzato = contaCaratteri(fin);
+    rewind(fin);
+
+    out = malloc(sizeof(char) * lenFileNormalizzato);
+
     while ((c = fgetc(fin)) != EOF)
     {
+
+        if (n_CharFileNormalizzato == 103)
+            printf("STOP");
+
         if (isPunteggiatura(c))
         {
             if (cPrec != ' ')
             {
-                appendCharToString(out, 32, n_CharFileNormalizzato);
-                n_CharFileNormalizzato++;
+                inserisciCarattere(out, 32, &n_CharFileNormalizzato, &lenFileNormalizzato);
                 cPrec = ' ';
             }
-            appendCharToString(out, c, n_CharFileNormalizzato);
-            n_CharFileNormalizzato++;
-            appendCharToString(out, 32, n_CharFileNormalizzato);
-            n_CharFileNormalizzato++;
+            inserisciCarattere(out, c, &n_CharFileNormalizzato, &lenFileNormalizzato);
+            inserisciCarattere(out, 32, &n_CharFileNormalizzato, &lenFileNormalizzato);
             cPrec = ' ';
         }
 
@@ -200,8 +207,7 @@ void preparaStream(FILE *fin, char *out)
         {
             if (cPrec != ' ')
             {
-                appendCharToString(out, 32, n_CharFileNormalizzato);
-                n_CharFileNormalizzato++;
+                inserisciCarattere(out, 32, &n_CharFileNormalizzato, &lenFileNormalizzato);
                 cPrec = ' ';
             }
         }
@@ -212,8 +218,7 @@ void preparaStream(FILE *fin, char *out)
             c = tolower(c);
             if (!((cPrec == c) && (c == 32)))
             {
-                appendCharToString(out, c, n_CharFileNormalizzato);
-                n_CharFileNormalizzato++;
+                inserisciCarattere(out, c, &n_CharFileNormalizzato, &lenFileNormalizzato);
             }
             cPrec = c;
         }
@@ -221,7 +226,23 @@ void preparaStream(FILE *fin, char *out)
     fileNormalizzato = out;
 }
 
-/* seconda lettura del file: popolo l'array di record
+int inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato, int *lenFileNormalizzato)
+{
+    // se la lunghezza di fileNormalizzato è minore dell'indice di lettura
+    // espando l'array di un carattere
+    if (*lenFileNormalizzato == *n_CharFileNormalizzato)
+    {
+        *lenFileNormalizzato += 1;
+        arr = realloc(arr, *lenFileNormalizzato);
+    }
+
+    appendCharToString(arr, c, *n_CharFileNormalizzato);
+    *n_CharFileNormalizzato += 1;
+}
+
+void popolaArrayRecordOccorrenze(char *testo)
+{
+    /* seconda lettura del file: popolo l'array di record
 per ciascuna parola che leggo nel file:
     - cerco l'indice sull'arrayParole
        (es: quel = 1)
@@ -229,9 +250,6 @@ per ciascuna parola che leggo nel file:
            - se non è presente inserisco l'indice in coda all'array
     da terminare per le parole successive e le occorrenze
 */
-
-void popolaArrayRecordOccorrenze(char *testo)
-{
     char c;
     int i_Char = 0;
     int i_Testo = 0;
@@ -336,13 +354,13 @@ void popolaArrayRecordOccorrenze(char *testo)
     }
 }
 
-/*
+void popolaArrayParole(char *fin)
+{
+    /*
 Metodo per la prima lettura del file.
 il metodo legge il file fino alla fine e scrive tutte le parole trovate in un distinctArray
 */
 
-void popolaArrayParole(char *fin)
-{
     char c;
     int i_Char = 0;
     int i_Fin = 0;
