@@ -23,59 +23,71 @@
 
 */
 
-/************************************************************************
- *                                                                      *
- *                  VARIABILI GLOBALI                                   *
- *                                                                      *
- * n_nomeVariabile:     intero che definisce un numero di occorrenze    *
- * i_nomeVariabile:     intero che definisce un indice                  *
+//***********************************************************************
+//                                                                      *
+//                    NOMENCLATURA PARTICOLARE PER VARIABILI            *
+//                                                                      *
+//   n_nomeVariabile:     intero che definisce un numero di occorrenze  *
+//   i_nomeVariabile:     intero che definisce un indice                *
+//                                                                      *
+//***********************************************************************
 
-*************************************************************************/
+/********************************
+ *                              *
+ *          VARIABILI           *
+ *                              *
+ ********************************/
 
 int nCharInput; // numero caratteri nel file di input
 
 type_parola arrayParole[10000]; // Array contiene tutte le singole istanze delle parole
 int n_DistinctParoleTesto = 0;  // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
 int n_ParoleTotali = 0;
-
+FILE *fin;
 char *fileNormalizzato;     // file riportato su array con eliminazione dei doppi spazi e separazione di tutti i caratteri di punteggiatura
 int n_CharFileNormalizzato; // numero caratteri del file normalizzato
 
 char stringone[10000]; // array in cui viene
 Record *arrayRecordParole;
 
+char nomeFile[] = "tempo.txt"; // file di testo di default
+
+//*******************************
+//                              *
+//          FUNZIONI            *
+//                              *
+//*******************************
+
+void init();
+void leggiParametri(int args, char *argv[]);
+void preparaStream(FILE *fin, char *out);
 void popolaArrayParole(char *fin);
 void popolaArrayRecordOccorrenze(char *fin);
-char *preparaStream(FILE *fin);
-int contaCaratteri(FILE *f);
+
 double calcolaOccorrenze(int n, int nTot);
 type_parola *getParola(type_parola *arrayPaole, int index);
 
 char *getNomeFile(int args, char *argv[]); // funzione che restituisce il nome file da argomento di avvio
-void leggiFile(FILE *fin);
-
-char nomeFile[] = "tempo.txt"; // file di testo di default
 
 int main(int args, char *argv[])
 {
-    FILE *fin;
-    /**
-     * APERTURA DEL FILE
-     */
-    strcpy(nomeFile, getNomeFile(args, argv));
-    printf("\033[3J");
+    init();
+    leggiParametri(args, argv);
+
+    printf("%s", nomeFile);
+
     fin = fopen(nomeFile, "r");
     if (fin == NULL)
     {
         printf("\n\nImpossibile aprire il file %s.\nEsco\n", nomeFile);
         return 1;
     }
-    printf("Numero caratteri nel testo: %d", nCharInput);
 
     // inizio la lettura del file:
     // la funzione crea un *char filenormalizzato in cui
     // tutte le parole e i segni di interpunzione sono separati da uno spazio
-    leggiFile(fin);
+    preparaStream(fin, fileNormalizzato);
+    stampaArrayCaratteri(fileNormalizzato, n_CharFileNormalizzato, "file normalizzato: ");
 
     // chiudo il file
     if (fin != NULL)
@@ -116,6 +128,27 @@ int main(int args, char *argv[])
     fclose(f);
 }
 
+void init()
+{
+    // TODO
+    /****************************
+     * Funzione init:           *
+     * inserire descrizione...  *
+     *****************************/
+    printf("\033[H\033[J");
+}
+
+void leggiParametri(int args, char *argv[])
+{
+    // TODO
+    //*******************************
+    // Funzione leggiParametri:     *
+    // La funzione analizza         *
+    // i parametri del main         *
+    //*******************************
+    strcpy(nomeFile, getNomeFile(args, argv));
+}
+
 double calcolaOccorrenze(int n, int nTot)
 {
     return ((double)n / nTot);
@@ -132,55 +165,32 @@ char *getNomeFile(int args, char *argv[])
     return (args > 1 ? argv[1] : nomeFile);
 }
 
-/*
-    CICLO DI LETTURA DELLE RIGHE DEL FILE
-
-    ParolaPrecedente = . (la prima parola non investigata è .
-    ParolaSuccessiva è la parola che viene letta.
-    terminata la parola succcessiva
-        viene registrata parola precedente
-        viene registrata parola successiva
-        parolaprecedente diventa parolasuccessiva
-    Se incontro i seguenti caratteri : _ \n la parola è terminata
-    . , ! ?
-*/
-void leggiFile(FILE *fin)
+void preparaStream(FILE *fin, char *out)
 {
-    fileNormalizzato = preparaStream(fin);
-    stampaArrayCaratteri(fileNormalizzato, n_CharFileNormalizzato, "file normalizzato: ");
     /*
-      lettura dell'array pre-processato:
-      carico tutte le parole distinte in un array arrayParole[]
-      es: arrayParole{. quel ramo del lago di como , ...}
-      */
-}
-
-/*
-il metodo legge il file e copia tutte le parole nell'array stringone eseguendo le seguenti correzioni:
-1- inserisce spazi prima e dopo la punteggiatura
-2- elimina doppi spazi
-al termine dell'elaborazione ciascuna parola o segno di punteggiatura sono separati da uno spazio
-*/
-char *preparaStream(FILE *fin)
-{
-    // TO DO 2: messo temporaneamente ~ in coda all'array
+ il metodo legge il file e copia tutte le parole nell'array stringone eseguendo le seguenti correzioni:
+ 1- inserisce spazi prima e dopo la punteggiatura
+ 2- elimina doppi spazi
+ al termine dell'elaborazione ciascuna parola o segno di punteggiatura sono separati da uno spazio
+ */
     char c;
     char cPrec = ' ';
     n_CharFileNormalizzato = 0;
 
+    out = malloc(sizeof(char) * 10000);
     while ((c = fgetc(fin)) != EOF)
     {
         if (isPunteggiatura(c))
         {
             if (cPrec != ' ')
             {
-                appendCharToString(stringone, 32, n_CharFileNormalizzato);
+                appendCharToString(out, 32, n_CharFileNormalizzato);
                 n_CharFileNormalizzato++;
                 cPrec = ' ';
             }
-            appendCharToString(stringone, c, n_CharFileNormalizzato);
+            appendCharToString(out, c, n_CharFileNormalizzato);
             n_CharFileNormalizzato++;
-            appendCharToString(stringone, 32, n_CharFileNormalizzato);
+            appendCharToString(out, 32, n_CharFileNormalizzato);
             n_CharFileNormalizzato++;
             cPrec = ' ';
         }
@@ -190,7 +200,7 @@ char *preparaStream(FILE *fin)
         {
             if (cPrec != ' ')
             {
-                appendCharToString(stringone, 32, n_CharFileNormalizzato);
+                appendCharToString(out, 32, n_CharFileNormalizzato);
                 n_CharFileNormalizzato++;
                 cPrec = ' ';
             }
@@ -202,13 +212,13 @@ char *preparaStream(FILE *fin)
             c = tolower(c);
             if (!((cPrec == c) && (c == 32)))
             {
-                appendCharToString(stringone, c, n_CharFileNormalizzato);
+                appendCharToString(out, c, n_CharFileNormalizzato);
                 n_CharFileNormalizzato++;
             }
             cPrec = c;
         }
     }
-    return stringone;
+    fileNormalizzato = out;
 }
 
 /* seconda lettura del file: popolo l'array di record
@@ -390,19 +400,7 @@ void popolaArrayParole(char *fin)
         i_Fin++;
     }
 }
-int contaCaratteri(FILE *f)
-{
-    /*
-    Il metodo restituisce il numero di caratteri nel file di testo in input
-    */
-    char c;
-    int n = 0;
-    while ((c = fgetc(f)) != EOF)
-    {
-        n++;
-    }
-    return n;
-}
+
 void stampaStatistiche(Record *arrayRecord, int numeroParoleTrovate)
 {
 

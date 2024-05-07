@@ -2,7 +2,7 @@
 #include "fileHandler.h"
 
 // #include "stringHandler.h"
-int contacaratteri(FILE *f);
+int contaCaratteri(FILE *f);
 
 /*
 LIBRERIA DI GESTIONE DEI FILE
@@ -17,8 +17,11 @@ int apriFile(char *filename, FILE *f)
     return 0;
 }
 
-int contacaratteri(FILE *f)
+int contaCaratteri(FILE *f)
 {
+    // conto i caratteri del file di input per avere una dimensione minima
+    // di caratteri da cui iniziare. i caratteri aggiuntivi (dovuti all'inserimento degli spazi)
+    // verranno allocati dopo la scansione di ogni parola
     char c;
     int n = 0;
     while ((c = fgetc(f)) != EOF)
@@ -28,10 +31,6 @@ int contacaratteri(FILE *f)
     rewind(f);
     return n;
 }
-// conto i caratteri del file di input per avere una dimensione minima
-// di caratteri da cui iniziare. i caratteri aggiuntivi (dovuti all'inserimento degli spazi)
-// verranno allocati dopo la scansione di ogni parola
-
 /*
 metodo per la scrittura di un file csv.
 il metodo accetta in input
