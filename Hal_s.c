@@ -13,6 +13,7 @@
 #include "stringHandler.c"
 #include "occorrenza.c"
 #include "printer.c"
+*/
 /*
 1) Apro il file di input
 2) copio il contenuto del file in  array(char) fileNormalizzato che ha le seguenti proprietà
@@ -311,26 +312,26 @@ per ciascuna parola che leggo nel file:
             {
                 // 1 creo array più grande
                 int newCountOccorrenze = RecordParolaTemp.n_ParoleSuccessive + 1;
-                /*       if (newCountOccorrenze == 1)
-                       {
-                           RecordParolaTemp.occorrenze = malloc(sizeof(Occorrenza) * 1);
-                           if (!RecordParolaTemp.occorrenze)
-                           {
-                               perror("realloc fallita...");
-                               exit(EXIT_FAILURE);
-                           }
-                       }
+                if (newCountOccorrenze == 1)
+                {
+                    RecordParolaTemp.occorrenze = malloc(sizeof(Occorrenza) * 1);
+                    if (!RecordParolaTemp.occorrenze)
+                    {
+                        perror("realloc fallita...");
+                        exit(EXIT_FAILURE);
+                    }
+                }
 
-                       else
-                           // rialloco la memoria per arrayTemp.occorrenze[];
-                           RecordParolaTemp.occorrenze = realloc(RecordParolaTemp.occorrenze, newCountOccorrenze * sizeof(Occorrenza));
+                else
+                    // rialloco la memoria per arrayTemp.occorrenze[];
+                    RecordParolaTemp.occorrenze = (Occorrenza *)realloc(RecordParolaTemp.occorrenze, newCountOccorrenze * sizeof(Occorrenza));
 
-                       if (!RecordParolaTemp.occorrenze)
-                       {
-                           perror("realloc fallita...");
-                           exit(EXIT_FAILURE);
-                       }
-                       */
+                if (!RecordParolaTemp.occorrenze)
+                {
+                    perror("realloc fallita...");
+                    exit(EXIT_FAILURE);
+                }
+
                 // printf("\n%s %s %d\n", parolaPrecedente, parolaSuccessiva, RecordParolaTemp.occorrenze[newCountOccorrenze].numeroOccorrenze);
                 // fflush(stdout);
 

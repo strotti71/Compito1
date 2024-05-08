@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 *old.*
+*.csv
+hal
+
 # Compiled Object files
 *.slo
 *.lo

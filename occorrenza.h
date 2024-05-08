@@ -27,7 +27,7 @@ Struttra per registrare i dati di ciascuna parola.
 */
 typedef struct
 {
-    Occorrenza occorrenze[1000];
+    Occorrenza *occorrenze;
     int n_ParoleSuccessive;
     int totaleParoleSuccessive;
 } Record;
