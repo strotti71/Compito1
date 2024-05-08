@@ -40,15 +40,15 @@
 
 int nCharInput; // numero caratteri nel file di input
 
-type_parola arrayParole[10000]; // Array contiene tutte le singole istanze delle parole
-int n_DistinctParoleTesto = 0;  // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
+type_parola *arrayParoleDistinte; // Array contiene tutte le singole istanze delle parole
+int n_DistinctParoleTesto = 0;    // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
 int n_ParoleTotali = 0;
 FILE *fin;
 char *fileNormalizzato;      // file riportato su array con eliminazione dei doppi spazi e separazione di tutti i caratteri di punteggiatura
 int lenFileNormalizzato = 0; // lunghezza del file normalizzato
 int n_CharFileNormalizzato;  // numero caratteri del file normalizzato
 
-Record *arrayRecordParole;
+Record arrayRecordParole[100000];
 
 char nomeFile[] = "tempo.txt"; // file di testo di default
 
@@ -61,17 +61,18 @@ char nomeFile[] = "tempo.txt"; // file di testo di default
 void init();
 void leggiParametri(int args, char *argv[]);
 void preparaStream(FILE *fin, char *out);
-int inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato, int *lenFileNormalizzato);
-void popolaArrayParole(char *fin);
+void inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato);
+void popolaArrayParoleDistinte(char *fin);
 void popolaArrayRecordOccorrenze(char *fin);
 
 double calcolaOccorrenze(int n, int nTot);
-type_parola *getParola(type_parola *arrayPaole, int index);
+char *getParola(type_parola *arrayPaole, int index);
 
 char *getNomeFile(int args, char *argv[]); // funzione che restituisce il nome file da argomento di avvio
 
 int main(int args, char *argv[])
 {
+
     init();
     leggiParametri(args, argv);
 
@@ -88,6 +89,7 @@ int main(int args, char *argv[])
     // la funzione crea un *char filenormalizzato in cui
     // tutte le parole e i segni di interpunzione sono separati da uno spazio
     preparaStream(fin, fileNormalizzato);
+
     stampaArrayCaratteri(fileNormalizzato, lenFileNormalizzato, "file normalizzato: ");
 
     // chiudo il file
@@ -96,37 +98,53 @@ int main(int args, char *argv[])
 
     // la funzione prende il file normalizzato e scrive arrayParole:
     // un array di parole distinte presenti nel testo
-    popolaArrayParole(fileNormalizzato);
+    popolaArrayParoleDistinte(fileNormalizzato);
 
-    stampaArrayParole(arrayParole, n_DistinctParoleTesto, "\nParole distinte del testo: ");
+    stampaArrayParole(arrayParoleDistinte, n_DistinctParoleTesto, "\nParole distinte del testo: ");
     printf("\nNumero Parole distinte: %d\nNumero Parole Totali: %d\n", n_DistinctParoleTesto, n_ParoleTotali);
 
     // creo arrayRecordParole dimensionato con il numero di parole distinte presenti nel testo
-    arrayRecordParole = calloc(n_DistinctParoleTesto, sizeof(Record));
-    arrayRecordParole->n_ParoleSuccessive = 0;
+    // arrayRecordParole = calloc(n_DistinctParoleTesto, sizeof(Record));
+    // arrayRecordParole->n_ParoleSuccessive = 0;
 
     // costruisco l'array di record che contengono i conteggi delle parole successive
     popolaArrayRecordOccorrenze(fileNormalizzato);
 
-    // esportaCsv(arrayRecordParole, numeroParoleTotali, "export.csv");
     int index = 0;
-    FILE *f = fopen("export.csv", "w");
-    if (f == NULL)
-    {
-        return -1;
-    }
     while (index < n_DistinctParoleTesto)
     {
-        fprintf(f, "\n%s", getParola(arrayParole, index));
+        printf("\n%s", arrayParoleDistinte[index]);
         for (int j = 0; j < arrayRecordParole[index].n_ParoleSuccessive; j++)
         {
             double d = calcolaOccorrenze(arrayRecordParole[index].occorrenze[j].n_Occorrenze, arrayRecordParole[index].totaleParoleSuccessive);
-            fprintf(f, ",%s,%5.3f.", getParola(arrayParole, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), d);
+            printf(",%s,%5.3f.", getParola(arrayParoleDistinte, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), d);
             fflush(stdout);
         }
         index++;
     }
-    fclose(f);
+
+    // esportaCsv(arrayRecordParole, numeroParoleTotali, "export.csv");
+    index = 0;
+    FILE *file = NULL;
+    file = fopen("export.csv", "w");
+    if (file == NULL)
+    {
+        perror("fopen()");
+        return EXIT_FAILURE;
+    }
+
+    while (index < n_DistinctParoleTesto)
+    {
+        fprintf(file, "\n%s", arrayParoleDistinte[index]);
+        for (int j = 0; j < arrayRecordParole[index].n_ParoleSuccessive; j++)
+        {
+            double d = calcolaOccorrenze(arrayRecordParole[index].occorrenze[j].n_Occorrenze, arrayRecordParole[index].totaleParoleSuccessive);
+            fprintf(file, ",%s,%5.3f.", getParola(arrayParoleDistinte, arrayRecordParole[index].occorrenze[j].parolaSuccessiva), d);
+            fflush(stdout);
+        }
+        index++;
+    }
+    fclose(file);
 }
 
 void init()
@@ -136,7 +154,7 @@ void init()
      * Funzione init:           *
      * inserire descrizione...  *
      *****************************/
-    printf("\033[H\033[J");
+    // printf("\033[H\033[J");
 }
 
 void leggiParametri(int args, char *argv[])
@@ -186,19 +204,15 @@ void preparaStream(FILE *fin, char *out)
 
     while ((c = fgetc(fin)) != EOF)
     {
-
-        if (n_CharFileNormalizzato == 103)
-            printf("STOP");
-
         if (isPunteggiatura(c))
         {
             if (cPrec != ' ')
             {
-                inserisciCarattere(out, 32, &n_CharFileNormalizzato, &lenFileNormalizzato);
+                inserisciCarattere(out, 32, &n_CharFileNormalizzato);
                 cPrec = ' ';
             }
-            inserisciCarattere(out, c, &n_CharFileNormalizzato, &lenFileNormalizzato);
-            inserisciCarattere(out, 32, &n_CharFileNormalizzato, &lenFileNormalizzato);
+            inserisciCarattere(out, c, &n_CharFileNormalizzato);
+            inserisciCarattere(out, 32, &n_CharFileNormalizzato);
             cPrec = ' ';
         }
 
@@ -207,7 +221,7 @@ void preparaStream(FILE *fin, char *out)
         {
             if (cPrec != ' ')
             {
-                inserisciCarattere(out, 32, &n_CharFileNormalizzato, &lenFileNormalizzato);
+                inserisciCarattere(out, 32, &n_CharFileNormalizzato);
                 cPrec = ' ';
             }
         }
@@ -218,7 +232,7 @@ void preparaStream(FILE *fin, char *out)
             c = tolower(c);
             if (!((cPrec == c) && (c == 32)))
             {
-                inserisciCarattere(out, c, &n_CharFileNormalizzato, &lenFileNormalizzato);
+                inserisciCarattere(out, c, &n_CharFileNormalizzato);
             }
             cPrec = c;
         }
@@ -226,14 +240,14 @@ void preparaStream(FILE *fin, char *out)
     fileNormalizzato = out;
 }
 
-int inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato, int *lenFileNormalizzato)
+void inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato)
 {
     // se la lunghezza di fileNormalizzato è minore dell'indice di lettura
     // espando l'array di un carattere
-    if (*lenFileNormalizzato == *n_CharFileNormalizzato)
+    if (lenFileNormalizzato == *n_CharFileNormalizzato)
     {
-        *lenFileNormalizzato += 1;
-        arr = realloc(arr, *lenFileNormalizzato);
+        lenFileNormalizzato += 1;
+        arr = (char *)realloc(arr, sizeof(char) * lenFileNormalizzato);
     }
 
     appendCharToString(arr, c, *n_CharFileNormalizzato);
@@ -265,6 +279,7 @@ per ciascuna parola che leggo nel file:
 
     while (i_Testo < n_CharFileNormalizzato)
     {
+
         c = testo[i_Testo];
         if (isSeparator(c))
         {
@@ -272,10 +287,10 @@ per ciascuna parola che leggo nel file:
             appendCharToString(parolaSuccessiva, '\0', i_Char);
 
             // cerco l'indice della parola appena letta nella'rray parole
-            i_Successiva = cercaParola(arrayParole, parolaSuccessiva, n_DistinctParoleTesto);
+            i_Successiva = cercaParola(arrayParoleDistinte, parolaSuccessiva, n_DistinctParoleTesto);
 
             // cerco l'indice della parola precedente
-            i_Precedente = cercaParola(arrayParole, parolaPrecedente, n_DistinctParoleTesto);
+            i_Precedente = cercaParola(arrayParoleDistinte, parolaPrecedente, n_DistinctParoleTesto);
             // creo un nuovo record copia del record corrispondente alla parola precedente
 
             Record RecordParolaTemp = arrayRecordParole[i_Precedente];
@@ -296,9 +311,26 @@ per ciascuna parola che leggo nel file:
             {
                 // 1 creo array più grande
                 int newCountOccorrenze = RecordParolaTemp.n_ParoleSuccessive + 1;
+                /*       if (newCountOccorrenze == 1)
+                       {
+                           RecordParolaTemp.occorrenze = malloc(sizeof(Occorrenza) * 1);
+                           if (!RecordParolaTemp.occorrenze)
+                           {
+                               perror("realloc fallita...");
+                               exit(EXIT_FAILURE);
+                           }
+                       }
 
-                // rialloco la memoria per arrayTemp.occorrenze[];
-                // RecordParolaTemp.occorrenze = realloc(RecordParolaTemp.occorrenze, newCountOccorrenze * sizeof(Occorrenza));
+                       else
+                           // rialloco la memoria per arrayTemp.occorrenze[];
+                           RecordParolaTemp.occorrenze = realloc(RecordParolaTemp.occorrenze, newCountOccorrenze * sizeof(Occorrenza));
+
+                       if (!RecordParolaTemp.occorrenze)
+                       {
+                           perror("realloc fallita...");
+                           exit(EXIT_FAILURE);
+                       }
+                       */
                 // printf("\n%s %s %d\n", parolaPrecedente, parolaSuccessiva, RecordParolaTemp.occorrenze[newCountOccorrenze].numeroOccorrenze);
                 // fflush(stdout);
 
@@ -328,6 +360,7 @@ per ciascuna parola che leggo nel file:
                 indiceParolaInArrayStructParole++;
 
                 arrayRecordParole[i_Precedente] = RecordParolaTemp;
+
                 // arrayRecordParole[indicePrecedente].occorrenze = realloc(arrayRecordParole[indicePrecedente].occorrenze, newCountOccorrenze * sizeof(Occorrenza));
             }
             // rialloco lo spazio per il record indice precedente
@@ -350,11 +383,13 @@ per ciascuna parola che leggo nel file:
                 i_Char++;
                 i_Testo++;
             }
+            else
+                printf("BREAK");
         }
     }
 }
 
-void popolaArrayParole(char *fin)
+void popolaArrayParoleDistinte(char *fin)
 {
     /*
 Metodo per la prima lettura del file.
@@ -365,11 +400,14 @@ il metodo legge il file fino alla fine e scrive tutte le parole trovate in un di
     int i_Char = 0;
     int i_Fin = 0;
     type_parola parola = ".";
+    arrayParoleDistinte = (type_parola *)calloc(1, sizeof(type_parola));
+    if (arrayParoleDistinte == NULL)
+        printf("Abort");
 
-    inserisciParola(arrayParole, parola, n_DistinctParoleTesto);
-    n_DistinctParoleTesto++;
+    inserisciParola(arrayParoleDistinte, parola, n_ParoleTotali);
+    n_ParoleTotali++;
 
-    for (int i = 0; i < n_CharFileNormalizzato; i++)
+    for (int i = 0; i < lenFileNormalizzato; i++)
     {
         c = (fin[i_Fin]);
         if (!((c < 32) || (c > 126)))
@@ -377,16 +415,15 @@ il metodo legge il file fino alla fine e scrive tutte le parole trovate in un di
 
             if (isSeparator(c))
             {
-                /*
-                se ho trovato un separatore ho una nuova parola e la inserisco nell'array
-                */
+                // se ho trovato un separatore ho una nuova parola e la inserisco nell'array
                 appendCharToString(parola, '\0', i_Char);
                 n_ParoleTotali++;
 
-                if (cercaParola(arrayParole, parola, n_DistinctParoleTesto) < 0)
+                if (cercaParola(arrayParoleDistinte, parola, n_DistinctParoleTesto) < 0)
                 {
-                    inserisciParola(arrayParole, parola, n_DistinctParoleTesto);
                     n_DistinctParoleTesto++;
+                    arrayParoleDistinte = (type_parola *)realloc(arrayParoleDistinte, sizeof(type_parola) * n_DistinctParoleTesto);
+                    inserisciParola(arrayParoleDistinte, parola, n_DistinctParoleTesto - 1);
                 }
                 pulisciStringa(parola, _MAX_LENGTH_WORD_);
                 i_Char = 0;
@@ -398,10 +435,12 @@ il metodo legge il file fino alla fine e scrive tutte le parole trovate in un di
                 appendCharToString(parola, '\0', i_Char);
                 n_ParoleTotali++;
 
-                if (cercaParola(arrayParole, parola, n_DistinctParoleTesto) < 0)
+                if (cercaParola(arrayParoleDistinte, parola, n_DistinctParoleTesto) < 0)
                 {
-                    inserisciParola(arrayParole, parola, n_DistinctParoleTesto);
                     n_DistinctParoleTesto++;
+                    arrayParoleDistinte = (type_parola *)realloc(arrayParoleDistinte, sizeof(type_parola) * n_DistinctParoleTesto);
+
+                    inserisciParola(arrayParoleDistinte, parola, n_DistinctParoleTesto - 1);
                 }
                 pulisciStringa(parola, _MAX_LENGTH_WORD_);
                 i_Char = 0;
@@ -419,22 +458,7 @@ il metodo legge il file fino alla fine e scrive tutte le parole trovate in un di
     }
 }
 
-void stampaStatistiche(Record *arrayRecord, int numeroParoleTrovate)
+char *getParola(type_parola *arrayParole, int index)
 {
-
-    printf("\n\n\n**********************************************");
-    printf("\n***********STAMPO LE STATISTICHE***************\n");
-    printf("\n\nNumero Parole distinte: %d\n\nNumero Parole Totali: %d\n\n", n_DistinctParoleTesto, n_ParoleTotali);
-    fflush(stdout);
-    //  sleep(1);
-    // }
-    printf("\n\n");
-    for (int i = 0; i < 100; i++)
-        printf("%s ", arrayParole[i]);
-    printf("\n\n\n******FINE STAMPO LE STATISTICHE***************");
-    printf("\n**********************************************\n\n\n");
-}
-type_parola *getParola(type_parola *arrayParole, int index)
-{
-    return (&arrayParole[index]);
+    return (arrayParole[index]);
 }
