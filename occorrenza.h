@@ -32,4 +32,9 @@ typedef struct
     int totaleParoleSuccessive;
 } Record;
 
+typedef struct
+{
+    int indexParola;
+    double probability;
+} ProbabilityArray;
 // int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);
