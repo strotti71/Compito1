@@ -14,7 +14,7 @@
 #include "occorrenza.c"
 #include "printer.c"
 
-
+/*
 1) Apro il file di input
 2) copio il contenuto del file in  array(char) fileNormalizzato che ha le seguenti proprietà
     - sono stati rimossi tutti i doppi spazi
@@ -51,9 +51,11 @@ int n_CharFileNormalizzato;  // numero caratteri del file normalizzato
 
 Record arrayRecordParole[100000];
 
-ProbabilityArray *arrayProb; // Array in cui vengono caricate le probabilità per ciascuna parola
-
 char nomeFile[] = "tempo.txt"; // file di testo di default
+
+ProbabilityArray *probabilitiArray; // Array in cui vengono caricate le probabilità per ciascuna parola
+
+int numeroParole;
 
 //*******************************
 //                              *
@@ -156,41 +158,77 @@ int main(int args, char *argv[])
 }
 
 void creaArrayProb(int indexParola)
-{ /*
-     char *arrayRecord;
-     printf("\n\ncarico conteggi dell'indice: %d", indexParola);
-     FILE *fileCSV = fopen("export.csv", "r");
-     if (fileCSV == NULL)
-     {
-         perror("creaArrayProb");
-         EXIT_FAILURE;
-     }
-     char c;
-     char *riga[31];
-     int i = 0;
-     int j = 0;
-     double prob = 0;
-     printf("\n\n");
-     char string[2000];
-     //  while ((c = fgetc(fin)) != EOF)
-     while ((c = fgetc(fileCSV)) != EOF)
-     {
-         printf("%c", c);
-         fflush(stdout);
-     }
-     int len = arrayRecordParole[indexParola].n_ParoleSuccessive;
-     printf("\n\nlunghezza: %d", len);
+{
+    numeroParole = 0;
+    type_parola word;
+    char c;                      // carattere letto
+    int indiceCarattereRiga = 0; // cursore che indica la posizione sulla riga
+    int isPrimaVirgola = 1;      // bool che indica se ho incontrato la prima virgola del testo che corrisponde alla prima parola se indiceCarattereRiga =0;
+    printf("\n\ncarico conteggi dell'indice: %d\n\n", indexParola);
+    FILE *fileCSV = fopen("export.csv", "r");
+    if (fileCSV == NULL)
+    {
+        perror("creaArrayProb");
+        EXIT_FAILURE;
+    }
 
-     fclose(fileCSV);
+    double prob = 0;
+    printf("\n\n");
 
-     arrayProb = (ProbabilityArray *)calloc(100, sizeof(ProbabilityArray));
-     for (int i = 0; i < 100; i++)
-     {
-         printf(" (%d) ", arrayRecordParole[indexParola].occorrenze[i].n_Occorrenze);
-     }
+    // alloco la memoria per il primo Record del probabilityArray;
+    probabilitiArray = (ProbabilityArray *)malloc(sizeof(ProbabilityArray) * 1);
+    // alloco memoria per il primo carattere letto
+    // word = (char *)calloc(1, sizeof(char));
 
-     printf("\n\n");
-     */
+    while ((c = fgetc(fileCSV)) != EOF)
+    {
+
+        switch (c)
+        {
+        case '\n':
+            /*    printf("\n%s", word);
+               fflush(stdout);
+               appendCharToString(word, '\0', indiceCarattereRiga);*/
+            indiceCarattereRiga = 0;
+            pulisciStringa(word, _MAX_LENGTH_WORD_);
+            // free(word);
+            // word = (char *)calloc(1, sizeof(char));
+            isPrimaVirgola = 1;
+            break;
+        case ',':
+            if (isPrimaVirgola)
+            {
+                numeroParole++;
+                appendCharToString(word, '\0', indiceCarattereRiga);
+                // ho trovato la prima parola: la inserisco nel prob array
+                probabilitiArray = (ProbabilityArray *)realloc(probabilitiArray, sizeof(ProbabilityArray) * numeroParole);
+                strcpy(probabilitiArray[(numeroParole - 1)].parola, word);
+                isPrimaVirgola = 0;
+                printf("\n%s", probabilitiArray[numeroParole - 1].parola);
+                pulisciStringa(word, _MAX_LENGTH_WORD_);
+                // free(word);
+                // word = (char *)calloc(1, sizeof(char));
+            }
+            break;
+        default:
+            indiceCarattereRiga++;
+            // word = (char *)realloc(word, indiceCarattereRiga * sizeof(char));
+            appendCharToString(word, c, indiceCarattereRiga - 1);
+
+            break;
+        }
+    }
+
+    fclose(fileCSV);
+
+    printf("\n\nStampo le prime parole:\n");
+    for (int i = 0; i < numeroParole; i++)
+    {
+        printf("\n%s", probabilitiArray[i].parola);
+    }
+    /*FILE *test = fopen("xxx.txt", "w");
+     fprintf(test, "\n%ssccss");
+     fclose(test);*/
 }
 
 void init()

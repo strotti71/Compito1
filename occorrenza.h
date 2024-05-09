@@ -34,7 +34,13 @@ typedef struct
 
 typedef struct
 {
-    int indexParola;
+    char *parola;
     double probability;
+} ProbabilityRecord;
+
+typedef struct
+{
+    type_parola parola;
+    ProbabilityRecord *probabilityRecords;
 } ProbabilityArray;
 // int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);

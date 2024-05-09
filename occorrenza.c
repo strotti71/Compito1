@@ -55,22 +55,6 @@ int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray)
 /*
 metodo per l'inserimento di una parola nell'array*/
 void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray)
-{ /*
-     if (lunghezzaArray == 0)
-     {
-         a = (type_parola *)malloc(sizeof(type_parola));
-         strcpy(a[lunghezzaArray], p);
-     }
-     else
-     {
-         printf("\nrealloco adesso");
-         fflush(stdout);
-         a = realloc(a, sizeof(type_parola) * (1 + lunghezzaArray));
-
-         strcpy(a[(lunghezzaArray + 1)], p);
-     }
-    printf("\033[H\033[J%d--> %s", lunghezzaArray, p);
-    fflush(stdout);
-    */
+{
     strcpy(a[(lunghezzaArray)], p);
 }
