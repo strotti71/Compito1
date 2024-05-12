@@ -1,4 +1,3 @@
-
 .,cosa,1.000.
 cosa,dicono,1.000.
 dicono,le,1.000.
@@ -7,7 +6,6 @@ previsioni,del,0.667.,di,0.333.
 del,tempo,1.000.
 tempo,?,0.333.,di,0.333.,incerto,0.333.
 ?,previsioni,1.000.
-
 di,oggi,0.500.,domani,0.500.
 oggi,:,1.000.
 :,tempo,1.000.

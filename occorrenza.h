@@ -34,13 +34,14 @@ typedef struct
 
 typedef struct
 {
-    char *parola;
+    type_parola parola;
     double probability;
-} ProbabilityRecord;
+} ProbabilityOccorrenza;
 
 typedef struct
 {
     type_parola parola;
-    ProbabilityRecord *probabilityRecords;
-} ProbabilityArray;
+    ProbabilityOccorrenza *probabilityOccorrenze;
+    int numeroParoleSuccessive;
+} ProbabilityRecord;
 // int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);
