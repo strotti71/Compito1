@@ -58,3 +58,5 @@ void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray)
 {
     strcpy(a[(lunghezzaArray)], p);
 }
+
+int cercaParolaArrayProbability(ProbabilityRecord probRec, type_parola p, int len) {}

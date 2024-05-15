@@ -13,8 +13,8 @@
 #include "stringHandler.c"
 #include "occorrenza.c"
 #include "printer.c"
-
 /*
+
 1) Apro il file di input
 2) copio il contenuto del file in  array(char) fileNormalizzato che ha le seguenti proprietà
     - sono stati rimossi tutti i doppi spazi
@@ -38,6 +38,8 @@
  *          VARIABILI           *
  *                              *
  ********************************/
+#define MAX_RIGHE 100000  // Numero massimo di righe del file csv
+#define MAX_LEN_RIGA 1000 // numero massimo di caratteri nel csv file
 
 int nCharInput; // numero caratteri nel file di input
 
@@ -62,7 +64,8 @@ int numeroParole;
 //          FUNZIONI            *
 //                              *
 //*******************************
-
+int contarighe(FILE *f);
+char **leggiFile(const char *nomeFile, int *numRighe);
 void init();
 void leggiParametri(int args, char *argv[]);
 void preparaStream(FILE *fin, char *out);
@@ -70,7 +73,7 @@ void inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato);
 void popolaArrayParoleDistinte(char *fin);
 void popolaArrayRecordOccorrenze(char *fin);
 void creaArrayProb();
-
+void stampaRiga(char *riga);
 double calcolaOccorrenze(int n, int nTot);
 char *getParola(type_parola *arrayPaole, int index);
 
@@ -80,7 +83,7 @@ int main(int args, char *argv[])
 {
 
     creaArrayProb();
-
+    generaTesto();
     /*
         init();
         leggiParametri(args, argv);
@@ -161,6 +164,101 @@ int main(int args, char *argv[])
     */
 }
 
+void generaTesto()
+{
+
+    type_parola parolaIniziale = "tempo";
+    int indexParolaIniziale = cercaParola(probabilityRecord, parolaIniziale, numeroParole);
+
+    printf("\n\nparola %s in posizione %d", parolaIniziale, indexParolaIniziale);
+}
+/*void creaArrayProb_old()
+{
+
+    // da,un,0.250.,qui,0.250.,dove,0.250.,ogni,0.250.
+    // per il calcolo delle probabilità nell'array diventa
+    // da,un,0.250.,qui,0.500.,dove,0.750.,ogni,1.000
+
+    // 1. leggo i caratteri finchè incontro la prima virgola
+    // 2. se virgola==1, ho trovato la parola guida
+    // 3. se virgola >1
+    //       - realloc di probabilityOccorrenza * virgolaù
+    //       - probabilityOccorrenza[virgola].parola = word
+    //       - probabilityOccorrenza.probability= probability+probability
+
+    // Come individuare le parole ',':
+    // se virgola è in posizione indexchar=0 allora virgola = word
+
+    numeroParole = 1;               // il numero di parole guida nell'arrayProbability
+    int virgola = 0;                // contatore delle virgole trovate nel testo
+    int numeroParoleSuccessive = 0; // il numero di parole successive;
+    type_parola word;               // la parola in costruzione durante la lettura
+    char c;                         // carattere letto
+    double prob = 0;                // probabilità cumulativa
+    int indiceCarattereRiga = 0;    // cursore che indica la posizione sulla riga
+    int isNextWord = 1;             // bool che indica la prossima sequenza di caratteri
+                                    //       è una parola: 1
+                                    //       è una probabilità : 0
+    int indiceParola = 0;           // indice per la costruzione della parola
+
+    // type_parola wordMemorizzata; // tengo in memoria l'ultima parola letta
+
+    // ProbabilityOccorrenza *probabilityOccorrenza;
+
+    printf("\n\ncarico conteggi:\n");
+    // word = (char *)malloc(sizeof(char) * 100000);
+    // wordMemorizzata = (char *)malloc(sizeof(char) * 100000);
+    int numRighe;
+    char **righe = leggiFile("export.csv", &numRighe);
+
+    for (int i = 0; i < numRighe; i++)
+    {
+        printf("Riga %d: %s", i + 1, righe[i]);
+    }
+}
+*/
+char **leggiFile(const char *nomeFile, int *numRighe)
+{
+    FILE *file = fopen(nomeFile, "r");
+    if (file == NULL)
+    {
+        perror("creaArrayProb");
+        exit(EXIT_FAILURE);
+    }
+
+    char *righe[MAX_RIGHE];
+    char *riga = malloc(MAX_LEN_RIGA * sizeof(char));
+    if (riga == NULL)
+    {
+        perror("creaArrayProb");
+        exit(EXIT_FAILURE);
+    }
+
+    int numrigheLette = 0;
+    while (fgets(riga, MAX_LEN_RIGA, file) != NULL && numrigheLette < MAX_RIGHE)
+    {
+        righe[numrigheLette] = strdup(riga);
+        printf(" %s\n", riga);
+        numrigheLette++;
+    }
+    fclose(file);
+    free(riga);
+    *numRighe = numrigheLette;
+
+    return righe;
+}
+void stampaRiga(char *riga)
+{
+    int i = 0;
+    char c = riga[0];
+    while (c != '\n')
+    {
+        printf(" %s\n", riga);
+        fflush(stdout);
+        i++;
+        c = riga[i];
+    }
+}
 void creaArrayProb()
 {
 
@@ -181,7 +279,7 @@ void creaArrayProb()
     numeroParole = 1;               // il numero di parole guida nell'arrayProbability
     int virgola = 0;                // contatore delle virgole trovate nel testo
     int numeroParoleSuccessive = 0; // il numero di parole successive;
-    char *word;                     // la parola in costruzione durante la lettura
+    type_parola word;               // la parola in costruzione durante la lettura
     char c;                         // carattere letto
     double prob = 0;                // probabilità cumulativa
     int indiceCarattereRiga = 0;    // cursore che indica la posizione sulla riga
@@ -190,13 +288,7 @@ void creaArrayProb()
                                     //       è una probabilità : 0
     int indiceParola = 0;           // indice per la costruzione della parola
 
-    char *wordMemorizzata; // tengo in memoria l'ultima parola letta
-
-    ProbabilityOccorrenza *probabilityOccorrenza;
-
-    printf("\n\ncarico conteggi:\n");
-    word = (char *)malloc(sizeof(char) * 100000);
-    wordMemorizzata = (char *)malloc(sizeof(char) * 100000);
+    type_parola wordMemorizzata; // tengo in memoria l'ultima parola letta
 
     FILE *fileCSV = fopen("export.csv", "r");
     if (fileCSV == NULL)
@@ -205,15 +297,16 @@ void creaArrayProb()
         EXIT_FAILURE;
     }
 
-    // alloco la memoria per il primo Record del ProbabilityRecord;
-    probabilityRecord = (ProbabilityRecord *)calloc(1, sizeof(ProbabilityRecord));
+    // preparazione: conto il numero di righe per allocare la lunghezza dell'array delle parole
+    int numeroRighe = contarighe(fileCSV);
+    probabilityRecord = (ProbabilityRecord *)calloc(numeroRighe, sizeof(ProbabilityRecord));
+    printf("\n\ncarico conteggi:\n");
+
     if (probabilityRecord == NULL)
     {
         perror("ProbabilityRecord?");
         exit(1);
     }
-    // alloco memoria per il primo carattere letto
-    // word = (char *)calloc(1, sizeof(char));
 
     while ((c = fgetc(fileCSV)) != EOF)
     {
@@ -223,17 +316,24 @@ void creaArrayProb()
             if (!isNextWord) // ho terminato di leggere le occorrenze; devo memorizzare l'ultima occorrenza
             {
                 prob = (double)(prob + atof(word));
-                // e creo il primo ProbabilityOccorrenza
-                ProbabilityOccorrenza *tempProbRecord = (ProbabilityOccorrenza *)calloc(numeroParoleSuccessive, sizeof(ProbabilityOccorrenza));
-                strcpy(tempProbRecord[numeroParoleSuccessive - 1].parola, wordMemorizzata);
-                tempProbRecord[numeroParoleSuccessive - 1].probability = prob;
-                probabilityOccorrenza = tempProbRecord;
-                probabilityRecord[numeroParole - 1].probabilityOccorrenze = probabilityOccorrenza;
-                printf(" (%f)", prob);
+                if (prob > 0.99)
+                    prob = 1;
+                ProbabilityOccorrenza *probabilityOccorrenzetmp = realloc(probabilityRecord[numeroParole - 1].probabilityOccorrenze, sizeof(ProbabilityOccorrenza) * numeroParoleSuccessive);
+
+                // ho trovato la prima parola: la inserisco nel prob array
+                strcpy(probabilityOccorrenzetmp[numeroParoleSuccessive - 1].parola, wordMemorizzata);
+                probabilityOccorrenzetmp[numeroParoleSuccessive - 1].probability = prob;
+                probabilityRecord[numeroParole - 1].numeroParoleSuccessive = numeroParoleSuccessive;
+                probabilityRecord[numeroParole - 1].probabilityOccorrenze = probabilityOccorrenzetmp;
+
+                virgola++;
+                printf(" %s (%f)", probabilityRecord[numeroParole - 1].probabilityOccorrenze[numeroParoleSuccessive - 1].parola,
+                       probabilityRecord[numeroParole - 1].probabilityOccorrenze[numeroParoleSuccessive - 1].probability);
+
                 fflush(stdout);
                 pulisciStringa(word, _MAX_LENGTH_WORD_);
                 pulisciStringa(wordMemorizzata, _MAX_LENGTH_WORD_);
-                free(tempProbRecord);
+                // free(probabilityOccorrenzetmp);
                 isNextWord = 1;
                 indiceCarattereRiga++;
             }
@@ -246,43 +346,46 @@ void creaArrayProb()
             isNextWord = 1;
             prob = 0;
             pulisciStringa(word, _MAX_LENGTH_WORD_);
-
             break;
-
         case ',':
-            if (virgola == 0)
+            if (virgola == 0 && indiceCarattereRiga == 0)
             {
-                if (indiceCarattereRiga == 0) // la virgola è la prima parola
-                {
-                    indiceCarattereRiga++;
-                    indiceParola++;
-                    // word = (char *)realloc(word, indiceCarattereRiga * sizeof(char));
-                    appendCharToString(word, c, indiceParola - 1);
-                    break;
-                }
+                //  CASO SPECIALE: LA VIRGOLA LETTA È UNA PAROLA E NON
+                // UN SEPARATORE
+                indiceCarattereRiga++;
+                indiceParola++;
+                // word = (char *)realloc(word, indiceCarattereRiga * sizeof(char));
+                appendCharToString(word, c, indiceParola - 1);
+                break;
+            }
+            if (virgola == 0 && indiceCarattereRiga > 0)
+            {
+                // PRIMA VIRGOLA INCONTRATA
+                //  INDICA LA FINE DELLA PAROLA GUIDA E L'INIZIO DELLE OCCORRENZE
+                //  L'ARRAY DELLE OCCORRENZE VIENE INZIALIZZATO A 1 (MALLOC(1))
+                numeroParoleSuccessive++;
 
-                else // prima virgola separatore incontrata
-                {
+                appendCharToString(word, '\0', indiceCarattereRiga);
+                indiceParola = 0;
+                ProbabilityRecord pRecordTemp = probabilityRecord[numeroParole - 1];
+                // ProbabilityOccorrenza *probabilityOccorrenzetmp = realloc(probabilityRecord[numeroParole - 1].probabilityOccorrenze, sizeof(ProbabilityOccorrenza) * numeroParoleSuccessive);
+                //  ho trovato la prima parola: la inserisco nel prob array
+                strcpy(pRecordTemp.parola, word);
+                pRecordTemp.numeroParoleSuccessive = numeroParoleSuccessive;
+                probabilityRecord[numeroParole - 1] = pRecordTemp;
+                free(pRecordTemp.probabilityOccorrenze);
+                virgola++;
 
-                    numeroParoleSuccessive++;
-                    indiceParola = 0;
+                pulisciStringa(word, _MAX_LENGTH_WORD_);
+                // probabilityRecord = probTemp;
+                printf("\n[%s] ", probabilityRecord[(numeroParole - 1)].parola);
+                fflush(stdout);
 
-                    appendCharToString(word, '\0', indiceCarattereRiga);
-                    // ho trovato la prima parola: la inserisco nel prob array
-                    ProbabilityRecord *probTemp = (ProbabilityRecord *)realloc(probabilityRecord, sizeof(ProbabilityRecord) * numeroParole);
-                    strcpy(probTemp[(numeroParole - 1)].parola, word);
-                    probTemp[numeroParole - 1].numeroParoleSuccessive = numeroParoleSuccessive;
-                    virgola++;
-                    pulisciStringa(word, _MAX_LENGTH_WORD_);
-                    probabilityRecord = probTemp;
-                    printf("\n[%s] ", probabilityRecord[(numeroParole - 1)].parola);
-                    fflush(stdout);
-
-                    indiceCarattereRiga++;
-                }
+                indiceCarattereRiga++;
+                break;
             }
 
-            else // virgola successiva indica le occorrenze
+            if (virgola > 0)
             {
                 if (wordMemorizzata == word) // se la parola precedente è una virgola allora la virgola è la parola successiva
                 {
@@ -290,8 +393,8 @@ void creaArrayProb()
 
                 if (isNextWord) // devo leggere una parola
                 {
-                    printf(" %s", word);
-                    fflush(stdout);
+                    // ho incontrato la parola di un'occorrenza: registro la parola in wordMemory per
+                    // registrarla successivamente  nell'arrayProbOccorrenza con la prio
                     strcpy(wordMemorizzata, word);
                     virgola++;
                     isNextWord = 0;
@@ -301,25 +404,32 @@ void creaArrayProb()
                 }
                 else // leggo l'occorrenza
                 {
-
                     prob = (double)(prob + atof(word));
-                    // e creo il primo ProbabilityOccorrenza
-                    ProbabilityOccorrenza *tempProbRecord = (ProbabilityOccorrenza *)calloc(numeroParoleSuccessive, sizeof(ProbabilityOccorrenza));
-                    strcpy(tempProbRecord[numeroParoleSuccessive - 1].parola, wordMemorizzata);
-                    tempProbRecord[numeroParoleSuccessive - 1].probability = prob;
-                    probabilityOccorrenza = tempProbRecord;
+                    if (prob > 0.99)
+                        prob = 1;
+                    ProbabilityOccorrenza *probabilityOccorrenzetmp = realloc(probabilityRecord[numeroParole - 1].probabilityOccorrenze, sizeof(ProbabilityOccorrenza) * numeroParoleSuccessive);
 
-                    probabilityRecord[numeroParole - 1].numeroParoleSuccessive++;
-                    probabilityRecord[numeroParole - 1].probabilityOccorrenze = probabilityOccorrenza;
-                    printf(" (%f)", prob);
+                    // ho trovato la prima parola: la inserisco nel prob array
+                    strcpy(probabilityOccorrenzetmp[numeroParoleSuccessive - 1].parola, wordMemorizzata);
+                    probabilityOccorrenzetmp[numeroParoleSuccessive - 1].probability = prob;
+                    probabilityRecord[numeroParole - 1].numeroParoleSuccessive = numeroParoleSuccessive;
+                    probabilityRecord[numeroParole - 1].probabilityOccorrenze = probabilityOccorrenzetmp;
+
+                    virgola++;
+                    printf(" %s (%f)", probabilityRecord[numeroParole - 1].probabilityOccorrenze[numeroParoleSuccessive - 1].parola,
+                           probabilityRecord[numeroParole - 1].probabilityOccorrenze[numeroParoleSuccessive - 1].probability);
+
                     fflush(stdout);
                     pulisciStringa(word, _MAX_LENGTH_WORD_);
                     pulisciStringa(wordMemorizzata, _MAX_LENGTH_WORD_);
-                    free(tempProbRecord);
                     isNextWord = 1;
                     indiceCarattereRiga++;
+                    numeroParoleSuccessive++;
+                    indiceParola = 0;
+                    isNextWord = 1;
                 }
             }
+
             break;
         default:
 
@@ -330,23 +440,31 @@ void creaArrayProb()
             break;
         }
     }
-    /*
-    fclose(fileCSV);
-    FILE *ftest;
-    ftest = fopen("ww.txt", "w");
-    fclose(ftest);
-*/
     numeroParole--;
-    printf("\n\n\n\n");
+    printf("\n\nStampa TUTTO\n");
     // stampo tutto
     for (int i = 0; i < numeroParole - 1; i++)
     {
-        printf("\n%s; ", probabilityRecord[i].parola);
+        printf("\n%s (%d) : ", probabilityRecord[i].parola, probabilityRecord[i].numeroParoleSuccessive);
         for (int j = 0; j < probabilityRecord[i].numeroParoleSuccessive; j++)
         {
-            printf("  ((%s)", probabilityRecord[i].probabilityOccorrenze[j].parola);
+            printf("  (%s) %f", probabilityRecord[i].probabilityOccorrenze[j].parola,
+                   probabilityRecord[i].probabilityOccorrenze[j].probability);
+            fflush(stdout);
         }
     }
+}
+int contarighe(FILE *f)
+{
+    char c;
+    int numRighe = 0;
+    while ((c = fgetc(f)) != EOF)
+    {
+        if (c == '\n')
+            numRighe++;
+    }
+    rewind(f);
+    return numRighe;
 }
 
 void init()
@@ -545,30 +663,9 @@ per ciascuna parola che leggo nel file:
                     RecordParolaTemp.occorrenze[newCountOccorrenze - 1].n_Occorrenze = 1;
                     RecordParolaTemp.n_ParoleSuccessive++;
                     RecordParolaTemp.totaleParoleSuccessive++;
-
-                    /*                 Occorrenza *newOcc = (Occorrenza *)calloc(newCountOccorrenze, sizeof(Occorrenza));
-                                 for (int i = 0; i < RecordParolaTemp.n_ParoleSuccessive; i++)
-
-                                 {
-                                     newOcc[i] = RecordParolaTemp.occorrenze[i];
-                                 }
-
-                 newOcc[newCountOccorrenze].parolaSuccessiva = indiceSuccessiva;
-                 newOcc[newCountOccorrenze].numeroOccorrenze = 1;
-
-                 free(RecordParolaTemp.occorrenze);
-    */
-
-                    // RecordParolaTemp.occorrenze = newOcc;
-                    //   RecordParolaTemp.n_ParoleSuccessive++;
-                    // arrayRecordParole[indicePrecedente] = RecordParolaTemp;
-                    //  printf("\nPrecedente:'%s'\tSuccessiva:'%s':\t num parole successive:%d", parolaPrecedente, parolaSuccessiva, arrayRecordParole->n_ParoleSuccessive);
-
                     indiceParolaInArrayStructParole++;
 
                     arrayRecordParole[i_Precedente] = RecordParolaTemp;
-
-                    // arrayRecordParole[indicePrecedente].occorrenze = realloc(arrayRecordParole[indicePrecedente].occorrenze, newCountOccorrenze * sizeof(Occorrenza));
                 }
                 // rialloco lo spazio per il record indice precedente
 
