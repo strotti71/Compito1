@@ -1,7 +1,6 @@
 #include "stringHandler.h"
 
 int cercaParola(type_parola *a, type_parola parolaCercata, int lunghezzaArray);
-
 void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray);
 
 /*
@@ -45,3 +44,5 @@ typedef struct
     int numeroParoleSuccessive;
 } ProbabilityRecord;
 // int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);
+
+int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola parolaCercata, int len);

@@ -59,4 +59,12 @@ void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray)
     strcpy(a[(lunghezzaArray)], p);
 }
 
-int cercaParolaArrayProbability(ProbabilityRecord probRec, type_parola p, int len) {}
+int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola parolaCercata, int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        if (strcmp(parolaCercata, probRec[i].parola) == 0)
+            return i;
+    }
+    return -1;
+}
