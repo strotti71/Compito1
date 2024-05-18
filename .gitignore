@@ -3,6 +3,7 @@
 *old.*
 *.csv
 hal
+Hal_s
 
 # Compiled Object files
 *.slo
