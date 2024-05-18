@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
+#include "Hal_s.h"
 #include "parameterHandler.h"
 #include "string.h"
 #include "fileHandler.h"
@@ -36,52 +37,6 @@
 //   i_nomeVariabile:     intero che definisce un indice                *
 //                                                                      *
 //***********************************************************************
-
-/********************************
- *                              *
- *          VARIABILI           *
- *                              *
- ********************************/
-
-int nCharInput; // numero caratteri nel file di input
-
-type_parola *arrayParoleDistinte; // Array contiene tutte le singole istanze delle parole
-int n_DistinctParoleTesto = 0;    // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
-int n_ParoleTotali = 0;
-FILE *fin;
-char *fileNormalizzato;      // file riportato su array con eliminazione dei doppi spazi e separazione di tutti i caratteri di punteggiatura
-int lenFileNormalizzato = 0; // lunghezza del file normalizzato
-int n_CharFileNormalizzato;  // numero caratteri del file normalizzato
-
-Record arrayRecordParole[1000000];
-
-// char nomeFile[] = "manzoni.txt"; // file di testo di default
-
-ProbabilityRecord *probabilityRecord; // Array in cui vengono caricate le probabilità per ciascuna parola
-
-int numeroParole;
-
-//*******************************
-//                              *
-//          FUNZIONI            *
-//                              *
-//*******************************
-int contarighe(FILE *f);
-// char **leggiFile(const char *nomeFile, int *numRighe);
-void init(int args, char *argv[], ParametriInput *parametri);
-void generaTesto();
-double generateRandomNum();
-// void leggiParametri(int args, char *argv[]);
-void preparaStream(FILE *fin, char *out);
-void inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato);
-void popolaArrayParoleDistinte(char *fin);
-void popolaArrayRecordOccorrenze(char *fin);
-void creaArrayProb();
-void stampaRiga(char *riga);
-double calcolaOccorrenze(int n, int nTot);
-char *getParola(type_parola *arrayPaole, int index);
-
-// char *getNomeFile(int args, char *argv[]); // funzione che restituisce il nome file da argomento di avvio
 
 int main(int args, char *argv[])
 {

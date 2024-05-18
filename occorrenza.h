@@ -1,3 +1,6 @@
+#ifndef OCCORRENZA_H
+#define OCCORRENZA_H
+
 #include "stringHandler.h"
 
 int cercaParola(type_parola *a, type_parola parolaCercata, int lunghezzaArray);
@@ -46,3 +49,5 @@ typedef struct
 // int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);
 
 int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola parolaCercata, int len);
+
+#endif
