@@ -1,8 +1,6 @@
 #include <string.h>
 #include "fileHandler.h"
 
-// #include "stringHandler.h"
-
 /*
 LIBRERIA DI GESTIONE DEI FILE
 */
@@ -38,32 +36,6 @@ il metodo accetta in input
     il nome file da scrivere
 
 Restituisce -1 se la scrittura del file è fallita*/
-int esportaCsv_old(type_parola *source, char *fileName)
-{
-    int j = 0;
-    printf("\n\n STAMPO DA FUNZIONE Esporta...\n\n");
-    while (strcmp(source[j], "~") != 0)
-    {
-        printf("%s ", source[j]);
-        fflush(stdout);
-        j++;
-    }
-
-    FILE *f = fopen(fileName, "w");
-    if (f == NULL)
-    {
-        return -1;
-    }
-    printf("\n\n");
-    j = 0;
-    while (strcmp(source[j], "~") != 0)
-    {
-        fprintf(f, "%s;\n", source[j]);
-        fflush(stdout);
-        j++;
-    }
-    return 0;
-}
 
 char *getParolaFromnumber(int number)
 {
@@ -100,32 +72,57 @@ char **leggiFile(const char *nomeFile, int *numRighe)
 
     return righe;
 }
-/*
-int esportaCsv(Record *source, int len, char *fileName)
-{
-    // int j = 0;
-    int index = 0;
-    printf("\n\n STAMPO DA FUNZIONE Esporta...\n\n");
-    while (index < len)
-    {
-        printf("%d", source[index]);
-        fflush(stdout);
-        index++;
-    }
 
-    FILE *f = fopen(fileName, "w");
-    if (f == NULL)
+/// @brief funzione per la creazione del file CSV. La funzione rende in input
+///         il record delle parole, quello delle parole distinte e scrive nel file di output
+//          per ciascuna parola quella successiva con la percentuale di occorrenze calcolata
+/// @param paroleDistinte l'array degli indici delle parole:
+/// @param arrayRecParole le parole lette nella loro esatta sequenza
+/// @param len             la lunghezza dello stream letto
+/// @param fileName        il nome del file di output: da verificare
+/// @return                 0 se la funzione non ha generato errori.
+int esportaCsv(type_parola *paroleDistinte, Record *arrayRecParole, int len, char *fileName)
+{
+    int index = 0;
+    FILE *file = NULL;
+    file = fopen("export.csv", "w");
+    if (file == NULL)
     {
-        return -1;
+        perror("fopen()");
+        return EXIT_FAILURE;
     }
-    printf("\n\n");
-    index = 0;
     while (index < len)
     {
-        printf("%d", source[index]);
-        fflush(stdout);
+        if (index > 0)
+            fprintf(file, "\n%s", paroleDistinte[index]);
+        else
+            fprintf(file, "%s", paroleDistinte[index]);
+        for (int j = 0; j < arrayRecParole[index].n_ParoleSuccessive; j++)
+        {
+            double d = calcolaOccorrenze(arrayRecParole[index].occorrenze[j].n_Occorrenze, arrayRecParole[index].totaleParoleSuccessive);
+            fprintf(file, ",%s,%5.8f", getParola(paroleDistinte, arrayRecParole[index].occorrenze[j].parolaSuccessiva), d);
+            fflush(stdout);
+        }
         index++;
     }
+    fprintf(file, "\n");
+    fclose(file);
     return 0;
 }
-*/
+
+/// @brief funzione che restituisce il numero di righe di un file in input
+/// @param f    il file di cui si vogliono contare le righe
+/// @return     il numero di righe del file
+int contarighe(FILE *f)
+{
+    char c;
+    int numRighe = 0;
+    while ((c = fgetc(f)) != EOF)
+    {
+        if (c == '\n')
+            numRighe++;
+    }
+    numRighe++;
+    rewind(f);
+    return numRighe;
+}

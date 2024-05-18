@@ -29,15 +29,11 @@ int numeroParole;
 //          FUNZIONI            *
 //                              *
 //*******************************
-int contarighe(FILE *f);
+
 void init(int args, char *argv[], ParametriInput *parametri);
 void generaTesto();
-double generateRandomNum();
 void preparaStream(FILE *fin, char *out);
 void inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato);
 void popolaArrayParoleDistinte(char *fin);
 void popolaArrayRecordOccorrenze(char *fin);
 void creaArrayProb();
-void stampaRiga(char *riga);
-double calcolaOccorrenze(int n, int nTot);
-char *getParola(type_parola *arrayPaole, int index);

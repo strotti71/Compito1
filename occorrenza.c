@@ -35,7 +35,15 @@ int cercaParola(type_parola *a, type_parola parolaCercata, int lunghezzaArray)
     }
     return -1;
 }
+double calcolaOccorrenze(int n, int nTot)
+{
+    return ((double)n / nTot);
+}
 
+char *getParola(type_parola *arrayParole, int index)
+{
+    return (arrayParole[index]);
+}
 /**
  * metodo per la ricerca di una intero nell'array di record.
  * se il numero è presente ne restituisce la posizione.
@@ -67,4 +75,12 @@ int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola parolaCe
             return i;
     }
     return -1;
+}
+/// @brief funzione che genera e restituisce un numero casuale compreso tra 0 e 1
+/// @return il numero generato
+double generateRandomNum()
+{
+    time_t timer;
+    srand((unsigned)time(&timer));
+    return ((double)rand() / RAND_MAX);
 }

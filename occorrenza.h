@@ -2,10 +2,13 @@
 #define OCCORRENZA_H
 
 #include "stringHandler.h"
+#include <time.h>
 
 int cercaParola(type_parola *a, type_parola parolaCercata, int lunghezzaArray);
 void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray);
-
+double calcolaOccorrenze(int n, int nTot);
+char *getParola(type_parola *arrayPaole, int index);
+double generateRandomNum();
 /*
 struttura per registrare un'occorrenza di parola successiva.
  - parolaSuccessiva è un intero corrispondente alla cella dell'arrayParole

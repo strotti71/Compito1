@@ -40,3 +40,18 @@ void stampaParametri(ParametriInput *parametri)
     printf("\n********************************");
     printf("\n********************************");
 }
+
+/// @brief funzione di servizio per la stampa di una riga
+/// @param riga la riga da stampare
+void stampaRiga(char *riga)
+{
+    int i = 0;
+    char c = riga[0];
+    while (c != '\n')
+    {
+        printf(" %s\n", riga);
+        fflush(stdout);
+        i++;
+        c = riga[i];
+    }
+}
