@@ -10,7 +10,7 @@
 type_parola *arrayParoleDistinte; // Array contiene tutte le singole istanze delle parole
 Record arrayRecordParole[1000000];
 ProbabilityRecord *probabilityRecord; // Array in cui vengono caricate le probabilità per ciascuna parola
-
+int unesedVArM;
 /********************************
  *                              *
  *          VARIABILI           *

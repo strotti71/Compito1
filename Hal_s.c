@@ -19,7 +19,7 @@
 #include "printer.c"
 #include "parameterHandler.c"
 
-/*
+
 1) Apro il file di input
 2) copio il contenuto del file in  array(char) fileNormalizzato che ha le seguenti proprietà
     - sono stati rimossi tutti i doppi spazi
@@ -498,17 +498,16 @@ void init(int args, char *argv[], ParametriInput *parametri)
 double calcolaOccorrenze(int n, int nTot)
 {
     return ((double)n / nTot);
-    // return (n);
 }
+/// @brief   il metodo legge il file e copia tutte le parole nell'array fileNormalizzato eseguendo le seguenti correzioni:
+/// 1- conto i caratteri del file in input (serviranno per dimensionare fileNormalizzato
+/// 1- inserisce spazi prima e dopo la punteggiatura
+/// 2- elimina doppi spazi
+/// al termine dell'elaborazione ciascuna parola o segno di punteggiatura sono separati da uno spazio
+/// @param fin il file in input
+/// @param out il file normalizzato
 void preparaStream(FILE *fin, char *out)
 {
-    //********************************************************************************************************************
-    //*****il metodo legge il file e copia tutte le parole nell'array fileNormalizzato eseguendo le seguenti correzioni:
-    //*****1- conto i caratteri del file in input (serviranno per dimensionare fileNormalizzato
-    //*****1- inserisce spazi prima e dopo la punteggiatura
-    //*****2- elimina doppi spazi
-    //***** al termine dell'elaborazione ciascuna parola o segno di punteggiatura sono separati da uno spazio
-    //********************************************************************************************************************
     char c;
     char cPrec = ' ';
 

@@ -1,6 +1,10 @@
-#include "printer.h"
 #include <stdio.h>
+#include "printer.h"
 
+/// @brief funzione generalizzata per la stampa di un array di parole;
+/// @param arr L'array di parole che si vuole stampare
+/// @param len il numero di parole
+/// @param s   la stringa descrittiva per l'intestazione della stampa
 void stampaArrayParole(type_parola *arr, int len, char *s)
 {
     printf("\n%s (%d elementi):\n", s, len);
@@ -8,8 +12,10 @@ void stampaArrayParole(type_parola *arr, int len, char *s)
     {
         printf("%s ", arr[i]);
     }
-}
-
+} /// @brief funzione generalizzata per la stampa di un array di caratteri;
+/// @param arr L'array di caratteri che si vuole stampare
+/// @param len il numero di caratteri da stampare
+/// @param s   l'intestazione da stampare prima dell'elenco delle righe
 void stampaArrayCaratteri(char *arr, int len, char *s)
 {
     printf("\n%s (%d elementi):\n", s, len);
@@ -20,6 +26,9 @@ void stampaArrayCaratteri(char *arr, int len, char *s)
     fflush(stdout);
 }
 
+/// @brief funzione per la stampa decorata dei parametri in input
+/// inserti dall'utente
+/// @param parametri la struttura (ParametriInput) contenente i parametri inseriti
 void stampaParametri(ParametriInput *parametri)
 {
     printf("\n*******PARAMETRI INPUT**********");
