@@ -2,19 +2,19 @@
 #include "fileHandler.h"
 
 // #include "stringHandler.h"
-int contaCaratteri(FILE *f);
 
 /*
 LIBRERIA DI GESTIONE DEI FILE
 */
-int apriFile(char *filename, FILE *f)
+FILE *apriFile(char *filename, char *modalita)
 {
-    f = fopen(filename, "r");
-    if (f != NULL)
+    printf("\nApro il file %s\n", filename);
+    FILE *f = fopen(filename, modalita);
+    if (f == NULL)
     {
-        return 1;
+        perror("Errore nell'apertura del file");
     }
-    return 0;
+    return f;
 }
 
 int contaCaratteri(FILE *f)
@@ -68,6 +68,37 @@ int esportaCsv_old(type_parola *source, char *fileName)
 char *getParolaFromnumber(int number)
 {
     return "ciao";
+}
+
+char **leggiFile(const char *nomeFile, int *numRighe)
+{
+    FILE *file = fopen(nomeFile, "r");
+    if (file == NULL)
+    {
+        perror("creaArrayProb");
+        exit(EXIT_FAILURE);
+    }
+
+    char *righe[MAX_RIGHE];
+    char *riga = malloc(MAX_LEN_RIGA * sizeof(char));
+    if (riga == NULL)
+    {
+        perror("creaArrayProb");
+        exit(EXIT_FAILURE);
+    }
+
+    int numrigheLette = 0;
+    while (fgets(riga, MAX_LEN_RIGA, file) != NULL && numrigheLette < MAX_RIGHE)
+    {
+        righe[numrigheLette] = strdup(riga);
+        printf(" %s\n", riga);
+        numrigheLette++;
+    }
+    fclose(file);
+    free(riga);
+    *numRighe = numrigheLette;
+
+    return righe;
 }
 /*
 int esportaCsv(Record *source, int len, char *fileName)
