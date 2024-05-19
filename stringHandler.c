@@ -1,6 +1,4 @@
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+
 #include "stringHandler.h"
 
 // int isSeparator(char c);
@@ -9,7 +7,15 @@
 /*
 Metodo per pulire una stringa
 */
-void pulisciStringa(char *s, int lunghezza)
+void pulisciStringa(wchar_t *s, int lunghezza)
+{
+    for (int i = 0; i < lunghezza; i++)
+    {
+        s[i] = 0;
+    }
+}
+
+void pulisciStringaChar(char *s, int lunghezza)
 {
     for (int i = 0; i < lunghezza; i++)
     {
@@ -19,14 +25,14 @@ void pulisciStringa(char *s, int lunghezza)
 /*
 metodo per controllare se il carattere letto è un fine parola...
 */
-int isSeparator(char c)
+int isSeparator(wchar_t c)
 {
     return c == ' ' || c == '\n';
 }
 
 /*
 metodo che indivisua se il carattere è un carattere di punteggiatura*/
-int isPunteggiatura(char c)
+int isPunteggiatura(wchar_t c)
 {
     return c == ',' || c == ';' || c == '.' || c == '!' || c == ':' || c == '?';
 }
@@ -46,16 +52,16 @@ char *appendCharToString(char *s, char c)
     sprintf(sTemp, "%s%c", s, c);
     return (sTemp);
 }*/
-void appendCharToString(char *s, char c, int i)
+void appendCharToString(wchar_t *s, wchar_t c, int i)
 {
     s[i] = c;
 }
 /*
 il metodo resetta le parole precedente e successiva
 */
-void resettaParole(char *parolaPrecedente, char *parolaSuccessiva, int indexChar)
+void resettaParole(wchar_t *parolaPrecedente, wchar_t *parolaSuccessiva, int indexChar)
 {
     pulisciStringa(parolaPrecedente, _MAX_LENGTH_WORD_);
-    strcpy(parolaPrecedente, parolaSuccessiva);
+    wcscpy(parolaPrecedente, parolaSuccessiva);
     pulisciStringa(parolaSuccessiva, _MAX_LENGTH_WORD_);
 }

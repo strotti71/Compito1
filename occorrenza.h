@@ -4,11 +4,12 @@
 #include "stringHandler.h"
 #include <time.h>
 
-int cercaParola(type_parola *a, type_parola parolaCercata, int lunghezzaArray);
-void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray);
+int cercaParola(type_parola_w *a, type_parola_w parolaCercata, int lunghezzaArray);
+void inserisciParola(type_parola_w *a, type_parola_w p, int lunghezzaArray);
 double calcolaOccorrenze(int n, int nTot);
-char *getParola(type_parola *arrayPaole, int index);
+wchar_t *getParola(type_parola_w *arrayPaole, int index);
 double generateRandomNum();
+double wCharToDouble(wchar_t cWord[30]);
 /*
 struttura per registrare un'occorrenza di parola successiva.
  - parolaSuccessiva è un intero corrispondente alla cella dell'arrayParole
@@ -39,18 +40,18 @@ typedef struct
 
 typedef struct
 {
-    type_parola parola;
+    type_parola_w parola;
     double probability;
 } ProbabilityOccorrenza;
 
 typedef struct
 {
-    type_parola parola;
+    type_parola_w parola;
     ProbabilityOccorrenza *probabilityOccorrenze;
     int numeroParoleSuccessive;
 } ProbabilityRecord;
 // int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);
 
-int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola parolaCercata, int len);
+int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola_w parolaCercata, int len);
 
 #endif

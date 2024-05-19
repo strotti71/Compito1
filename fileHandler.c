@@ -7,7 +7,7 @@ LIBRERIA DI GESTIONE DEI FILE
 FILE *apriFile(char *filename, char *modalita)
 {
     printf("\nApro il file %s\n", filename);
-    FILE *f = fopen(filename, modalita);
+    FILE *f = fopen(filename, "r");
     if (f == NULL)
     {
         perror("Errore nell'apertura del file");
@@ -20,9 +20,9 @@ int contaCaratteri(FILE *f)
     // conto i caratteri del file di input per avere una dimensione minima
     // di caratteri da cui iniziare. i caratteri aggiuntivi (dovuti all'inserimento degli spazi)
     // verranno allocati dopo la scansione di ogni parola
-    char c;
+    wint_t c;
     int n = 0;
-    while ((c = fgetc(f)) != EOF)
+    while ((c = fgetwc(f)) != WEOF)
     {
         n++;
     }
@@ -79,8 +79,9 @@ void leggiFile(const char *nomeFile, int *numRighe)
 /// @param len             la lunghezza dello stream letto
 /// @param fileName        il nome del file di output: da verificare
 /// @return                 0 se la funzione non ha generato errori.
-int esportaCsv(type_parola *paroleDistinte, Record *arrayRecParole, int len, char *fileName)
+int esportaCsv(type_parola_w *paroleDistinte, Record *arrayRecParole, int len, char *fileName)
 {
+    setlocale(LC_ALL, "");
     int index = 0;
     FILE *file = NULL;
     file = fopen("export.csv", "w");
@@ -92,18 +93,25 @@ int esportaCsv(type_parola *paroleDistinte, Record *arrayRecParole, int len, cha
     while (index < len)
     {
         if (index > 0)
-            fprintf(file, "\n%s", paroleDistinte[index]);
+        {
+            fwprintf(file, L"\n%ls", paroleDistinte[index]);
+            fflush(stdout);
+        }
         else
-            fprintf(file, "%s", paroleDistinte[index]);
+            fwprintf(file, L"%ls", paroleDistinte[index]);
         for (int j = 0; j < arrayRecParole[index].n_ParoleSuccessive; j++)
         {
             double d = calcolaOccorrenze(arrayRecParole[index].occorrenze[j].n_Occorrenze, arrayRecParole[index].totaleParoleSuccessive);
-            fprintf(file, ",%s,%5.8f", getParola(paroleDistinte, arrayRecParole[index].occorrenze[j].parolaSuccessiva), d);
+            fwprintf(file, L",%ls", getParola(paroleDistinte, arrayRecParole[index].occorrenze[j].parolaSuccessiva));
+
+            setlocale(LC_ALL, "C");
+            fwprintf(file, L",%5.8f", d);
+            setlocale(LC_ALL, "");
             fflush(stdout);
         }
         index++;
     }
-    fprintf(file, "\n");
+    fwprintf(file, L"\n");
     fclose(file);
     return 0;
 }

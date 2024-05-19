@@ -6,7 +6,7 @@
 /*
 Metodo per la creazione di un nuovo record.
 */
-Record *inserisciRecord(char parola[_MAX_LENGTH_WORD_], type_parola parolaSuccessiva)
+Record *inserisciRecord(wchar_t parola[_MAX_LENGTH_WORD_], type_parola_w parolaSuccessiva)
 {
     Record *r = (Record *)malloc(sizeof(Record));
     if (r == NULL)
@@ -25,12 +25,12 @@ Record *inserisciRecord(char parola[_MAX_LENGTH_WORD_], type_parola parolaSucces
  * se la parola è presente ne restituisce la posizione.
  * se la parola non è presente restituisce -1
  */
-int cercaParola(type_parola *a, type_parola parolaCercata, int lunghezzaArray)
+int cercaParola(type_parola_w *a, type_parola_w parolaCercata, int lunghezzaArray)
 {
 
     for (int i = 0; i < lunghezzaArray; i++)
     {
-        if (strcmp(parolaCercata, a[i]) == 0)
+        if (wcscmp(parolaCercata, a[i]) == 0)
             return i;
     }
     return -1;
@@ -40,7 +40,7 @@ double calcolaOccorrenze(int n, int nTot)
     return ((double)n / nTot);
 }
 
-char *getParola(type_parola *arrayParole, int index)
+wchar_t *getParola(type_parola_w *arrayParole, int index)
 {
     return (arrayParole[index]);
 }
@@ -62,16 +62,16 @@ int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray)
 
 /*
 metodo per l'inserimento di una parola nell'array*/
-void inserisciParola(type_parola *a, type_parola p, int lunghezzaArray)
+void inserisciParola(type_parola_w *a, type_parola_w p, int lunghezzaArray)
 {
-    strcpy(a[(lunghezzaArray)], p);
+    wcscpy(a[(lunghezzaArray)], p);
 }
 
-int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola parolaCercata, int len)
+int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola_w parolaCercata, int len)
 {
     for (int i = 0; i < len; i++)
     {
-        if (strcmp(parolaCercata, probRec[i].parola) == 0)
+        if (wcscmp(parolaCercata, probRec[i].parola) == 0)
             return i;
     }
     return -1;
@@ -83,4 +83,13 @@ double generateRandomNum()
     time_t timer;
     srand((unsigned)time(&timer));
     return ((double)rand() / RAND_MAX);
+}
+
+double wCharToDouble(wchar_t cWord[30])
+{
+    char mbstr[100];                       // Assicurati che l'array sia abbastanza grande per contenere la stringa multibyte
+    wcstombs(mbstr, cWord, sizeof(mbstr)); // Converte la stringa wide character in una stringa multibyte
+
+    double result = strtod(mbstr, NULL); // Converte la stringa multibyte in double
+    return result;                       // Restituisce il risultato come double
 }

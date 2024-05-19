@@ -1,13 +1,16 @@
+#include <wchar.h>
+#include <wctype.h>
 #include "fileHandler.h"
 #include "occorrenza.h"
 #include "stringHandler.h"
 #include "parameterHandler.h"
+#include <wchar.h>
 
 #define SYZE_CHAR sizeof(char)
 #define SYZE_RECORD sizeof(Record)
 #define _MAX_LENGTH_WORD_ 31 // lunghezza massima della parola (30 char + \0)
 
-type_parola *arrayParoleDistinte; // Array contiene tutte le singole istanze delle parole
+type_parola_w *arrayParoleDistinte; // Array contiene tutte le singole istanze delle parole
 Record arrayRecordParole[1000000];
 ProbabilityRecord *probabilityRecord; // Array in cui vengono caricate le probabilità per ciascuna parola
 int unesedVArM;
@@ -17,7 +20,7 @@ int unesedVArM;
  *                              *
  ********************************/
 FILE *fin;
-char *fileNormalizzato;        // file riportato su array con eliminazione dei doppi spazi e separazione di tutti i caratteri di punteggiatura
+wchar_t *fileNormalizzato;     // file riportato su array con eliminazione dei doppi spazi e separazione di tutti i caratteri di punteggiatura
 int lenFileNormalizzato = 0;   // lunghezza del file normalizzato
 int n_CharFileNormalizzato;    // numero caratteri del file normalizzato
 int n_DistinctParoleTesto = 0; // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
@@ -34,8 +37,10 @@ ParametriInput parametri;
 void init(int args, char *argv[], ParametriInput *parametri);
 int produciTabellaOccorrenze();
 void generaTesto();
-void preparaStream(FILE *fin, char *out);
-void inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato);
-void popolaArrayParoleDistinte(char *fin);
-void popolaArrayRecordOccorrenze(char *fin);
+void preparaStream(FILE *fin, wchar_t *out);
+// void inserisciCarattere(wchar_t *arr, wchar_t c, int *n_CharFileNormalizzato);
+void inserisciCarattere(wchar_t **arr, wchar_t c, int *n_CharFileNormalizzato);
+void popolaArrayParoleDistinte(wchar_t *fin);
+void popolaArrayRecordOccorrenze(wchar_t *fin);
 void creaArrayProb();
+void appendCharToStringNew(wchar_t *arr, wchar_t c, int n_CharFileNormalizzato);

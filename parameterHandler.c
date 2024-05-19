@@ -25,7 +25,7 @@ void leggiParametri(int argc, char *argv[], ParametriInput *parametri)
             // parametro -i = input di un file
             if (i + 1 < argc)
             {
-                pulisciStringa(parametri->inputFileName, 30);
+                pulisciStringaChar(parametri->inputFileName, 30);
                 strcpy(parametri->inputFileName, argv[i + 1]);
                 i++;
             }
@@ -44,7 +44,7 @@ void leggiParametri(int argc, char *argv[], ParametriInput *parametri)
             // parametro -s: parola iniziale nel testo generato
             if (i + 1 < argc)
             {
-                pulisciStringa(parametri->startingWord, 30);
+                pulisciStringaChar(parametri->startingWord, 30);
                 strcpy(parametri->startingWord, argv[i + 1]);
                 i++;
             }
