@@ -41,8 +41,8 @@ char *getParolaFromnumber(int number)
 {
     return "ciao";
 }
-
-char **leggiFile(const char *nomeFile, int *numRighe)
+/*
+void leggiFile(const char *nomeFile, int *numRighe)
 {
     FILE *file = fopen(nomeFile, "r");
     if (file == NULL)
@@ -69,10 +69,8 @@ char **leggiFile(const char *nomeFile, int *numRighe)
     fclose(file);
     free(riga);
     *numRighe = numrigheLette;
-
-    return righe;
 }
-
+*/
 /// @brief funzione per la creazione del file CSV. La funzione rende in input
 ///         il record delle parole, quello delle parole distinte e scrive nel file di output
 //          per ciascuna parola quella successiva con la percentuale di occorrenze calcolata

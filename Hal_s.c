@@ -44,20 +44,24 @@
 /// @return
 int main(int args, char *argv[])
 {
-    setlocale(LC_ALL, "");
-    ParametriInput parametri;
-    init(args, argv, &parametri);
+    // setlocale(LC_ALL, "");
 
+    init(args, argv, &parametri);
+    produciTabellaOccorrenze();
+    creaArrayProb();
+    generaTesto();
+}
+int produciTabellaOccorrenze()
+{
+    // inizio la lettura del file:
+    // la funzione crea un *char filenormalizzato in cui
+    // tutte le parole e i segni di interpunzione sono separati da uno spazio
     fin = fopen(parametri.inputFileName, "r");
     if (fin == NULL)
     {
         printf("\n\nImpossibile aprire il file %s.\nEsco\n", parametri.inputFileName);
         return 1;
     }
-
-    // inizio la lettura del file:
-    // la funzione crea un *char filenormalizzato in cui
-    // tutte le parole e i segni di interpunzione sono separati da uno spazio
 
     preparaStream(fin, fileNormalizzato);
     if (fin != NULL)
@@ -72,22 +76,14 @@ int main(int args, char *argv[])
     // liberare memoria
     free(arrayParoleDistinte);
     free(fileNormalizzato);
-
-    creaArrayProb();
-    generaTesto();
+    return 0;
 }
-
 void generaTesto()
 {
 
-    type_parola parolaEstratta = "quel";
+    type_parola parolaEstratta = ".";
 
-    for (int j = 0; j < 50; j++)
-    {
-        double rnd = generateRandomNum();
-
-        printf("\n%f", rnd);
-    }
+    // double rnd = generateRandomNum();
 
     printf("\n\nTESTO GENERATO:\n ");
 

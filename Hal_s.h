@@ -23,6 +23,7 @@ int n_CharFileNormalizzato;    // numero caratteri del file normalizzato
 int n_DistinctParoleTesto = 0; // numero di parole distinte nel testo. ciascuna parola viene caricata nell'array parole
 int n_ParoleTotali = 0;
 int numeroParole;
+ParametriInput parametri;
 
 //*******************************
 //                              *
@@ -31,6 +32,7 @@ int numeroParole;
 //*******************************
 
 void init(int args, char *argv[], ParametriInput *parametri);
+int produciTabellaOccorrenze();
 void generaTesto();
 void preparaStream(FILE *fin, char *out);
 void inserisciCarattere(char *arr, char c, int *n_CharFileNormalizzato);
