@@ -50,7 +50,7 @@ int main(int args, char *argv[])
     init(args, argv, &parametri);
     produciTabellaOccorrenze();
     creaArrayProb();
-    // generaTesto();
+    generaTesto();
 }
 int produciTabellaOccorrenze()
 {
@@ -76,8 +76,8 @@ int produciTabellaOccorrenze()
     esportaCsv(arrayParoleDistinte, arrayRecordParole, n_DistinctParoleTesto, "export.csv");
 
     // liberare memoria
-    //  free(arrayParoleDistinte);
-    //  free(fileNormalizzato);
+    free(arrayParoleDistinte);
+    free(fileNormalizzato);
 
     return 0;
 }
@@ -90,7 +90,7 @@ void generaTesto()
 
     printf("\n\nTESTO GENERATO:\n ");
 
-    for (int x = 0; x < 100; x++)
+    for (int x = 0; x < parametri.nParoleDaGenerare; x++)
     {
         int i = 0;
         int trovata = 0;
@@ -216,7 +216,7 @@ void creaArrayProb()
     int virgola = 0;                // contatore delle virgole trovate nel testo
     int numeroParoleSuccessive = 0; // il numero di parole successive;
     type_parola_w word;             // la parola in costruzione durante la lettura
-    char c;                         // carattere letto
+    wchar_t c;                      // carattere letto
     double prob = 0;                // probabilità cumulativa
     int indiceCarattereRiga = 0;    // cursore che indica la posizione sulla riga
     int isNextWord = 1;             // bool che indica la prossima sequenza di caratteri
@@ -238,14 +238,14 @@ void creaArrayProb()
     int numeroRighe = contarighe(fileCSV);
     probabilityRecord = (ProbabilityRecord *)calloc(numeroRighe, sizeof(ProbabilityRecord));
     printf("\n\ncarico conteggi:\n");
-
+    setlocale(LC_ALL, "C");
     if (probabilityRecord == NULL)
     {
         perror("ProbabilityRecord?");
         exit(1);
     }
-
     while ((c = fgetc(fileCSV)) != EOF)
+
     {
         switch (c)
         {
@@ -392,6 +392,7 @@ void creaArrayProb()
             break;
         }
     }
+
     numeroParole--;
     printf("\n\nStampa TUTTO\n");
     // stampo tutto
