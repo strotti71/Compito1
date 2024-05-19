@@ -9,3 +9,4 @@ void pulisciStringa(char *s, int lunghezza);
 #define MAX_LEN_RIGA 10000   // numero massimo di caratteri nel csv file
 
 typedef char type_parola[_MAX_LENGTH_WORD_];
+typedef wchar_t type_parola_w[_MAX_LENGTH_WORD_];
