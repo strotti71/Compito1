@@ -81,14 +81,22 @@ int produciTabellaOccorrenze()
 
     return 0;
 }
+unsigned long long getMilliseconds()
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return (unsigned long long)(tv.tv_sec) * 1000 + (unsigned long long)(tv.tv_usec) / 1000;
+}
+
 void generaTesto()
 {
+    setlocale(LC_ALL, "");
+    type_parola_w parolaEstratta[30];
+    mbstowcs(parolaEstratta, parametri.startingWord, sizeof(parolaEstratta) / sizeof(parametri.startingWord[0]));
+    // wcscpy(parolaEstratta, parametri.startingWord);
+    //  double rnd = generateRandomNum();
 
-    type_parola_w parolaEstratta = L".";
-
-    // double rnd = generateRandomNum();
-
-    printf("\n\nTESTO GENERATO:\n ");
+    printf("\n\n%ls", parolaEstratta);
 
     for (int x = 0; x < parametri.nParoleDaGenerare; x++)
     {
@@ -100,15 +108,11 @@ void generaTesto()
 
         // genero un numero random tra 0 e 1
 
-        double randNum = (double)rand() / RAND_MAX;
-
         while (i <= probabilityRecord[indexParolaIniziale].numeroParoleSuccessive && trovata == 0)
         {
-            //  printf("\n\nparola  %s  ", probabilityRecord[indexParolaIniziale].probabilityOccorrenze[i].parola);
-            //    printf("\nprobabilità estratta  %f  \t probabilità record: %f\n", randNum,
-            //        probabilityRecord[indexParolaIniziale].probabilityOccorrenze[i].probability);
-            //   fflush(stdout);
-
+            srand(getMilliseconds());
+            usleep(25000);
+            double randNum = (double)rand() / RAND_MAX;
             wcscpy(parolaEstratta, probabilityRecord[indexParolaIniziale].probabilityOccorrenze[i].parola);
             if (randNum <= probabilityRecord[indexParolaIniziale].probabilityOccorrenze[i].probability)
                 trovata = 1;
@@ -398,11 +402,11 @@ void creaArrayProb()
     // stampo tutto
     for (int i = 0; i < numeroParole - 1; i++)
     {
-        printf("\n%ls (%d) : ", probabilityRecord[i].parola, probabilityRecord[i].numeroParoleSuccessive);
+        wprintf(L"\n%ls (%d) : ", probabilityRecord[i].parola, probabilityRecord[i].numeroParoleSuccessive);
         for (int j = 0; j < probabilityRecord[i].numeroParoleSuccessive; j++)
         {
-            printf("  (%ls) %f", probabilityRecord[i].probabilityOccorrenze[j].parola,
-                   probabilityRecord[i].probabilityOccorrenze[j].probability);
+            wprintf(L"  (%ls) %f", probabilityRecord[i].probabilityOccorrenze[j].parola,
+                    probabilityRecord[i].probabilityOccorrenze[j].probability);
             fflush(stdout);
         }
     }

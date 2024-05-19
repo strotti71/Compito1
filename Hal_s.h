@@ -44,3 +44,4 @@ void popolaArrayParoleDistinte(wchar_t *fin);
 void popolaArrayRecordOccorrenze(wchar_t *fin);
 void creaArrayProb();
 void appendCharToStringNew(wchar_t *arr, wchar_t c, int n_CharFileNormalizzato);
+unsigned long long getMilliseconds();
