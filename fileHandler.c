@@ -81,7 +81,7 @@ void leggiFile(const char *nomeFile, int *numRighe)
 /// @return                 0 se la funzione non ha generato errori.
 int esportaCsv(type_parola_w *paroleDistinte, Record *arrayRecParole, int len, char *fileName)
 {
-    setlocale(LC_ALL, "C");
+    setlocale(LC_ALL, "");
     int index = 0;
     FILE *file = NULL;
     file = fopen("export.csv", "w");

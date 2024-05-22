@@ -90,13 +90,17 @@ unsigned long long getMilliseconds()
 
 void generaTesto()
 {
-    setlocale(LC_ALL, "");
-    type_parola_w parolaEstratta[30];
-    mbstowcs(parolaEstratta, parametri.startingWord, sizeof(parolaEstratta) / sizeof(parametri.startingWord[0]));
-    // wcscpy(parolaEstratta, parametri.startingWord);
-    //  double rnd = generateRandomNum();
+    setlocale(LC_ALL, "it_IT.UTF8");
+    type_parola_w parolaEstratta;
+    type_parola_w parolaPrecedente;
+    type_parola_w wStartingWord;
+    type_parola_w upperParolaEstratta;
+    mbstowcs(wStartingWord, parametri.startingWord, _MAX_LENGTH_WORD_);
 
-    printf("\n\n%ls", parolaEstratta);
+    wcscpy(parolaPrecedente, wStartingWord);
+    wcscpy(parolaEstratta, wStartingWord);
+
+    printf("\nEcco il testo:\n");
 
     for (int x = 0; x < parametri.nParoleDaGenerare; x++)
     {
@@ -107,21 +111,41 @@ void generaTesto()
         int indexParolaIniziale = cercaParolaArrayProbability(probabilityRecord, parolaEstratta, numeroParole);
 
         // genero un numero random tra 0 e 1
-
+        srand(getMilliseconds());
+        usleep(25000);
+        double randNum = (double)rand() / RAND_MAX;
         while (i <= probabilityRecord[indexParolaIniziale].numeroParoleSuccessive && trovata == 0)
         {
-            srand(getMilliseconds());
-            usleep(25000);
-            double randNum = (double)rand() / RAND_MAX;
+
             wcscpy(parolaEstratta, probabilityRecord[indexParolaIniziale].probabilityOccorrenze[i].parola);
             if (randNum <= probabilityRecord[indexParolaIniziale].probabilityOccorrenze[i].probability)
                 trovata = 1;
             i++;
         }
-        printf(" %ls", parolaEstratta);
+
+        // se la parola precedente è punteggiatura,  inserisco spazio e primo carattere in maiuscolo
+
+        switch (is_special_char(parolaPrecedente))
+        {
+        case 1:
+            wcscpy(upperParolaEstratta, parolaEstratta);
+            upperParolaEstratta[0] = towupper(upperParolaEstratta[0]);
+            printf(" %ls", (wchar_t *)upperParolaEstratta);
+            /* code */
+            break;
+
+        default:
+            if (is_special_char(parolaEstratta) == 1)
+                printf("%ls", (wchar_t *)parolaEstratta);
+            else
+                printf(" %ls", (wchar_t *)parolaEstratta);
+            break;
+        }
         fflush(stdout);
+        wcscpy(parolaPrecedente, parolaEstratta);
     }
 }
+
 /*void creaArrayProb_old()
 {
 

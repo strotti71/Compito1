@@ -9,7 +9,7 @@ void inserisciParola(type_parola_w *a, type_parola_w p, int lunghezzaArray);
 double calcolaOccorrenze(int n, int nTot);
 wchar_t *getParola(type_parola_w *arrayPaole, int index);
 double generateRandomNum();
-double wCharToDouble(wchar_t cWord[30]);
+double wCharToDouble(wchar_t cWord[_MAX_LENGTH_WORD_]);
 /*
 struttura per registrare un'occorrenza di parola successiva.
  - parolaSuccessiva è un intero corrispondente alla cella dell'arrayParole

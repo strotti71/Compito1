@@ -1,5 +1,6 @@
 #include <wchar.h>
 #include <wctype.h>
+#include <sys/time.h>
 #include "fileHandler.h"
 #include "occorrenza.h"
 #include "stringHandler.h"
@@ -14,6 +15,7 @@ type_parola_w *arrayParoleDistinte; // Array contiene tutte le singole istanze d
 Record arrayRecordParole[1000000];
 ProbabilityRecord *probabilityRecord; // Array in cui vengono caricate le probabilità per ciascuna parola
 int unesedVArM;
+
 /********************************
  *                              *
  *          VARIABILI           *

@@ -85,7 +85,7 @@ double generateRandomNum()
     return ((double)rand() / RAND_MAX);
 }
 
-double wCharToDouble(wchar_t cWord[30])
+double wCharToDouble(wchar_t cWord[_MAX_LENGTH_WORD_])
 {
     char mbstr[100];                       // Assicurati che l'array sia abbastanza grande per contenere la stringa multibyte
     wcstombs(mbstr, cWord, sizeof(mbstr)); // Converte la stringa wide character in una stringa multibyte

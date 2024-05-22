@@ -65,3 +65,15 @@ void resettaParole(wchar_t *parolaPrecedente, wchar_t *parolaSuccessiva, int ind
     wcscpy(parolaPrecedente, parolaSuccessiva);
     pulisciStringa(parolaSuccessiva, _MAX_LENGTH_WORD_);
 }
+int is_special_char(const type_parola_w parola)
+{
+    // Controlla se parola è uno dei caratteri speciali
+    if (wcscmp(parola, L".") == 0 ||
+        wcscmp(parola, L":") == 0 ||
+        wcscmp(parola, L"?") == 0 ||
+        wcscmp(parola, L"!") == 0)
+    {
+        return 1;
+    }
+    return 0;
+}
