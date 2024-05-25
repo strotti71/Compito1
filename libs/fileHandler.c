@@ -1,9 +1,16 @@
 #include <string.h>
 #include "fileHandler.h"
 
-/*
-LIBRERIA DI GESTIONE DEI FILE
-*/
+//***********************************************************************
+//                                                                      *
+//                    LIBRERIA PER LA GESTIONE DEI FILE                 *
+//                                                                      *
+//***********************************************************************
+
+/// @brief funzione per l'apertura di un file
+/// @param filename il nome del file da aprire
+/// @param modalita modalità di apertura del file: r o w
+/// @return restituisce l'oggetto FILE
 FILE *apriFile(char *filename, char *modalita)
 {
     printf("\nApro il file %s\n", filename);
@@ -15,6 +22,9 @@ FILE *apriFile(char *filename, char *modalita)
     return f;
 }
 
+/// @brief funzione per cantare i caratteri in un file di testo.
+/// @param f il file di cui si vogliono contare i caratteri
+/// @return  il numero di caratteru
 int contaCaratteri(FILE *f)
 {
     // conto i caratteri del file di input per avere una dimensione minima
@@ -29,48 +39,15 @@ int contaCaratteri(FILE *f)
     rewind(f);
     return n;
 }
-/*
-metodo per la scrittura di un file csv.
-il metodo accetta in input
-    un array di parole
-    il nome file da scrivere
 
-Restituisce -1 se la scrittura del file è fallita*/
-
+/// @brief funzione che restituisce una parola dato l'indice dell'array distinctParole di una parola
+/// @param number   la posizione nell'array distinct Parole
+/// @return         la parola corrispondente
 char *getParolaFromnumber(int number)
 {
     return "ciao";
 }
-/*
-void leggiFile(const char *nomeFile, int *numRighe)
-{
-    FILE *file = fopen(nomeFile, "r");
-    if (file == NULL)
-    {
-        perror("creaArrayProb");
-        exit(EXIT_FAILURE);
-    }
 
-    char *righe[MAX_RIGHE];
-    char *riga = malloc(MAX_LEN_RIGA * sizeof(char));
-    if (riga == NULL)
-    {
-        perror("creaArrayProb");
-        exit(EXIT_FAILURE);
-    }
-
-    int numrigheLette = 0;
-    while (fgets(riga, MAX_LEN_RIGA, file) != NULL && numrigheLette < MAX_RIGHE)
-    {
-        righe[numrigheLette] = strdup(riga);
-        printf(" %s\n", riga);
-        numrigheLette++;
-    }
-    fclose(file);
-    free(riga);
-    *numRighe = numrigheLette;
-}
-*/
 /// @brief funzione per la creazione del file CSV. La funzione rende in input
 ///         il record delle parole, quello delle parole distinte e scrive nel file di output
 //          per ciascuna parola quella successiva con la percentuale di occorrenze calcolata
@@ -133,6 +110,8 @@ int contarighe(FILE *f)
     return numRighe;
 }
 
+/// @brief funzione che, dato un file di testo in input lo stampa a video
+/// @param file_path il file che si vuole stampare
 void stampa_file(const char *file_path)
 {
     FILE *file = fopen(file_path, "r");

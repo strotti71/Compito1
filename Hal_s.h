@@ -1,6 +1,5 @@
 #include <wchar.h>
 #include <wctype.h>
-#include <sys/time.h>
 #include "./libs/fileHandler.h"
 #include "./libs/occorrenza.h"
 #include "./libs/stringHandler.h"
@@ -43,4 +42,3 @@ void inserisciCarattere(wchar_t **arr, wchar_t c, int *n_CharFileNormalizzato);
 void popolaArrayParoleDistinte(wchar_t *fin);
 void popolaArrayRecordOccorrenze(wchar_t *fin);
 void creaArrayProb();
-unsigned long getMilliseconds();

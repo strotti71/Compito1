@@ -3,6 +3,7 @@
 
 #include "stringHandler.h"
 #include <time.h>
+#include <sys/time.h>
 
 int cercaParola(type_parola_w *a, type_parola_w parolaCercata, int lunghezzaArray);
 void inserisciParola(type_parola_w *a, type_parola_w p, int lunghezzaArray);
@@ -10,6 +11,7 @@ double calcolaOccorrenze(int n, int nTot);
 wchar_t *getParola(type_parola_w *arrayPaole, int index);
 double generateRandomNum();
 double wCharToDouble(wchar_t cWord[_MAX_LENGTH_WORD_]);
+unsigned long getMilliseconds();
 /*
 struttura per registrare un'occorrenza di parola successiva.
  - parolaSuccessiva è un intero corrispondente alla cella dell'arrayParole

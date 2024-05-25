@@ -93,3 +93,10 @@ double wCharToDouble(wchar_t cWord[_MAX_LENGTH_WORD_])
     double result = strtod(mbstr, NULL); // Converte la stringa multibyte in double
     return result;                       // Restituisce il risultato come double
 }
+
+unsigned long getMilliseconds()
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return (unsigned long)(tv.tv_sec) * 1000 + (unsigned long)(tv.tv_usec) / 1000;
+}
