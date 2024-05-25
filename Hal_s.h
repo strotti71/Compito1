@@ -1,11 +1,10 @@
 #include <wchar.h>
 #include <wctype.h>
 #include <sys/time.h>
-#include "fileHandler.h"
-#include "occorrenza.h"
-#include "stringHandler.h"
-#include "parameterHandler.h"
-#include <wchar.h>
+#include "./libs/fileHandler.h"
+#include "./libs/occorrenza.h"
+#include "./libs/stringHandler.h"
+#include "./libs/parameterHandler.h"
 
 #define SYZE_CHAR sizeof(char)
 #define SYZE_RECORD sizeof(Record)

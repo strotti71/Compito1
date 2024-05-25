@@ -1,0 +1,57 @@
+Hal: guida 
+-----------------------------------------------------------------------------
+1) spiegazione del programma e bugs da correggere
+2) PARAMETRI DELLA LINEA DI COMANDO
+3) DESCRIZIONE DELLA LOGICA GENERALE.
+4) descrizione delle funzioni principali
+-----------------------------------------------------------------------------
+
+2) PARAMETRI DELLA LINEA DI COMANDO
+
+il programma accetta nella linea di comando i seguenti parametri:
+
+a) -h help: viene stampato questo file
+
+b) -i nomefile: ovvero si può indicare un file in input da leggere;
+	se non viene specificato un file di input, il programma legge il file
+	di default tempo.txt
+c) -n numero:	permette di specificare il numero di parole che il programma deve generare in 		
+	output.
+d) -s parola:	permette di specificare la parola precedente di inizio. di default viene utilizzato il carattere '.'
+se viene scelta una parola non presente nel testo in input, il programma setta nuovamente il carattere '.'
+
+-----------------------------------------------------------------------------
+
+3) DESCRIZIONE DELLA LOGICA GENERALE.
+
+------------------------------------
+		PARTE A
+
+	CREAZIONE FILE EXPORT.CSV
+------------------------------------
+il programma effettua le seguenti operazioni in sequenza:
+
+a) normalizzazione del file in input: il programma legge il file di input e crea una stringa normalizata, ovvero individua tutte le parole, compresi i caratteri di interpunzione, e li separa con uno spazio; cancella eventuali doppi spazi ed esegue un lowercase di tutti i caratteri.
+
+esempio: Ciao,come stai?   Come va? --> ciao , come stai ? come va ?
+
+b) crea un array di parole distinte. 
+esempio: -->ciao , come stai ? come va ? --> . ciao , come stai ? va
+l'array delle parole distinte viene usato dal programma per cercare le parole. 
+Le parole negli array che seguiranno non verranno più memorizzate come stringhe di caratteri ma come numeri; i numeri corrispondono agli indici nell'array delle parole distinte.
+
+	esempio: la parola 'stai' verrà memorizzata come 4; il carattere punto verrà memorizzato come 0.
+
+c)popolaArrayRecordOccorrenze: la funzione che crea un array di occorrenze che verrà poi esportato sul file csv letto dalla seconda parte del programma.
+
+La struct Record contiene 
+	la parola (un intero) di cui si registrano le occorrenze successive
+	il numero di occorrenze successive
+	un puntatore all'array di occorrenze successive
+	
+La struct occorrenza contiene
+	la parola
+	il numero di occorrenze registrate
+	
+	
+			

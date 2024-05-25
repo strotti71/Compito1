@@ -7,12 +7,12 @@
 #include <wchar.h>
 
 #include "Hal_s.h"
-#include "parameterHandler.h"
-#include "string.h"
-#include "fileHandler.h"
-#include "stringHandler.h"
-#include "occorrenza.h"
-#include "printer.h"
+#include "./libs/parameterHandler.h"
+
+#include "./libs/fileHandler.h"
+#include "./libs/stringHandler.h"
+#include "./libs/occorrenza.h"
+#include "./libs/printer.h"
 /*
 #include "fileHandler.c"
 #include "stringHandler.c"
