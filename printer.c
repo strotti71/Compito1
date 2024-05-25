@@ -37,7 +37,7 @@ void stampaParametri(ParametriInput *parametri)
     printf("\nPrima parola del testo da generare: %s", parametri->startingWord);
 
     printf("\n********************************");
-    printf("\n********************************");
+    printf("\n********************************\n\n");
 }
 
 /// @brief funzione di servizio per la stampa di una riga

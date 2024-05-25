@@ -84,7 +84,7 @@ int esportaCsv(type_parola_w *paroleDistinte, Record *arrayRecParole, int len, c
     setlocale(LC_ALL, "");
     int index = 0;
     FILE *file = NULL;
-    file = fopen("export.csv", "w");
+    file = fopen(CSV_FILE, "w");
     if (file == NULL)
     {
         perror("fopen()");
@@ -131,4 +131,27 @@ int contarighe(FILE *f)
     numRighe++;
     rewind(f);
     return numRighe;
+}
+
+void stampa_file(const char *file_path)
+{
+    FILE *file = fopen(file_path, "r");
+    if (file == NULL)
+    {
+        perror("Errore nell'apertura del file");
+        return;
+    }
+
+    char ch;
+    while ((ch = fgetc(file)) != EOF)
+    {
+        putchar(ch);
+    }
+
+    if (ferror(file))
+    {
+        perror("Errore nella lettura del file");
+    }
+
+    fclose(file);
 }

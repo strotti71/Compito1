@@ -15,9 +15,9 @@ typedef wchar_t type_parola_w[_MAX_LENGTH_WORD_];
 int isSeparator(wchar_t c);
 int isPunteggiatura(wchar_t c);
 void appendCharToString(wchar_t *s, wchar_t c, int i);
-void resettaParole(wchar_t *parolaPrecedente, wchar_t *parolaSuccessiva, int indexChar);
 void pulisciStringa(wchar_t *s, int lunghezza);
 void pulisciStringaChar(char *s, int lunghezza);
 int is_special_char(const type_parola_w parola);
+void appendCharToStringNew(wchar_t *arr, wchar_t c, int n_CharFileNormalizzato);
 
 #endif
