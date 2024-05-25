@@ -3,28 +3,17 @@
 #include <string.h>
 #include "occorrenza.h"
 
-/*
-Metodo per la creazione di un nuovo record.
-*/
-Record *inserisciRecord(wchar_t parola[_MAX_LENGTH_WORD_], type_parola_w parolaSuccessiva)
-{
-    Record *r = (Record *)malloc(sizeof(Record));
-    if (r == NULL)
-        printf("ERRORE");
-    Occorrenza *occ = (Occorrenza *)malloc(sizeof(Occorrenza));
-    if (occ == NULL)
-        printf("ERRORE");
-    // strcpy(r->parola, parola);
-
-    //   strcpy(r->occorrenze[0].parolaSuccessiva, parolaSuccessiva);
-    return r;
-}
-
 /**
- * metodo per la ricerca di una parola nell'array.
- * se la parola è presente ne restituisce la posizione.
- * se la parola non è presente restituisce -1
+
  */
+
+/// @brief   metodo per la ricerca di una parola nell'array.w
+///            se la parola è presente ne restituisce la posizione.
+///         se la parola non è presente restituisce -1
+/// @param a
+/// @param parolaCercata
+/// @param lunghezzaArray
+/// @return
 int cercaParola(type_parola_w *a, type_parola_w parolaCercata, int lunghezzaArray)
 {
 
@@ -35,38 +24,39 @@ int cercaParola(type_parola_w *a, type_parola_w parolaCercata, int lunghezzaArra
     }
     return -1;
 }
+
+/// @brief funzione per convertire il numero occorrenze in una percentuale
+/// @param n    il numero in input
+/// @param nTot il totale su cui calcolare la percentuale
+/// @return     la percentuale restituita
 double calcolaOccorrenze(int n, int nTot)
 {
     return ((double)n / nTot);
 }
 
+/// @brief La funzione restituisce una parola in un array di parole
+/// @param arrayParole  l'array da cui prendere la parola
+/// @param index        la posizione della parola nell'array
+/// @return             la parola
 wchar_t *getParola(type_parola_w *arrayParole, int index)
 {
     return (arrayParole[index]);
 }
-/**
- * metodo per la ricerca di una intero nell'array di record.
- * se il numero è presente ne restituisce la posizione.
- * se il numero non è presente restituisce -1
 
-int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray)
-{
-    for (int i = 0; i < lunghezzaArray; i++)
-    {
-        if (rec[i] == numeroCercato)
-            return i;
-    }
-    return -1;
-}
-*/
-
-/*
-metodo per l'inserimento di una parola nell'array*/
+/// @brief metodo per l'inserimento di una parola in un array di parole
+/// @param a    l'array in cui inserire la parola
+/// @param p    la parola da inserire
+/// @param lunghezzaArray la posizione in cui inserire la parola
 void inserisciParola(type_parola_w *a, type_parola_w p, int lunghezzaArray)
 {
     wcscpy(a[(lunghezzaArray)], p);
 }
 
+/// @brief funzione che cerca e restituisce l'indice nell'array probability di una parola
+/// @param probRec          L'array di probability in cui cercare
+/// @param parolaCercata    La parola da cercare
+/// @param len              Le dimensioni dell'array
+/// @return                 L'indice della parola; -1 se la parola non è presente
 int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola_w parolaCercata, int len)
 {
     for (int i = 0; i < len; i++)
@@ -76,6 +66,7 @@ int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola_w parola
     }
     return -1;
 }
+
 /// @brief funzione che genera e restituisce un numero casuale compreso tra 0 e 1
 /// @return il numero generato
 double generateRandomNum()
@@ -85,15 +76,20 @@ double generateRandomNum()
     return ((double)rand() / RAND_MAX);
 }
 
+/// @brief funzione che converte un wChar_t* in double: utilizzata per calcolare le probabilità lette dal file csv
+/// @param cWord la parola da convertire
+/// @return      un double
 double wCharToDouble(wchar_t cWord[_MAX_LENGTH_WORD_])
 {
-    char mbstr[100];                       // Assicurati che l'array sia abbastanza grande per contenere la stringa multibyte
-    wcstombs(mbstr, cWord, sizeof(mbstr)); // Converte la stringa wide character in una stringa multibyte
+    char mbstr[100];                       // creo array  abbastanza grande per contenere la stringa multibyte
+    wcstombs(mbstr, cWord, sizeof(mbstr)); // Converto la stringa wide character in una stringa multibyte
 
-    double result = strtod(mbstr, NULL); // Converte la stringa multibyte in double
-    return result;                       // Restituisce il risultato come double
+    double result = strtod(mbstr, NULL); // Converto la stringa multibyte in double
+    return result;                       // Restituisco il risultato come double
 }
 
+/// @brief     funzione per la generazione di un numero casuale (tra 0 e 1) utilizzando il timer di sistema
+/// @return    il numero casuale generato
 unsigned long getMilliseconds()
 {
     struct timeval tv;

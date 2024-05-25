@@ -6,9 +6,10 @@
 #include <sys/time.h>
 
 int cercaParola(type_parola_w *a, type_parola_w parolaCercata, int lunghezzaArray);
-void inserisciParola(type_parola_w *a, type_parola_w p, int lunghezzaArray);
 double calcolaOccorrenze(int n, int nTot);
 wchar_t *getParola(type_parola_w *arrayPaole, int index);
+void inserisciParola(type_parola_w *a, type_parola_w p, int lunghezzaArray);
+
 double generateRandomNum();
 double wCharToDouble(wchar_t cWord[_MAX_LENGTH_WORD_]);
 unsigned long getMilliseconds();
@@ -52,7 +53,6 @@ typedef struct
     ProbabilityOccorrenza *probabilityOccorrenze;
     int numeroParoleSuccessive;
 } ProbabilityRecord;
-// int cercaIntero(Record *rec, int numeroCercato, int lunghezzaArray);
 
 int cercaParolaArrayProbability(ProbabilityRecord *probRec, type_parola_w parolaCercata, int len);
 
