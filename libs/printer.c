@@ -1,6 +1,12 @@
 
 #include "printer.h"
 
+//***********************************************************************
+//                                                                      *
+//                    LIBRERIA PER LA GESTIONE DELLE STAMPE             *
+//                                                                      *
+//***********************************************************************
+
 /// @brief funzione generalizzata per la stampa di un array di parole;
 /// @param arr L'array di parole che si vuole stampare
 /// @param len il numero di parole

@@ -4,7 +4,13 @@
 #include "parameterHandler.h"
 #include "stringHandler.h"
 
-char defaultFile[30] = "tempo.txt";
+char defaultFile[50] = "tempo.txt";
+
+//***********************************************************************
+//                                                                      *
+//                    LIBRERIA PER LA GESTIONE DEI PARAMETRI            *
+//                                                                      *
+//***********************************************************************
 
 /// @brief funzione per la gestione dei parametri in input:
 //  -h  stampa il manuale del programma

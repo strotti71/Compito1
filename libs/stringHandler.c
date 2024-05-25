@@ -1,6 +1,12 @@
 
 #include "stringHandler.h"
 
+//***********************************************************************
+//                                                                      *
+//                    LIBRERIA PER LA GESTIONE DELLE STRINGHE           *
+//                                                                      *
+//***********************************************************************
+
 /// @brief funzione per pulire un array di caratteri wchar_t. la funzione imposta tutti gli elementi dell'array a zero
 /// @param s            l'array da pulire
 /// @param lunghezza    lunghezza dell'array

@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "occorrenza.h"
-
+//***********************************************************************
+//                                                                      *
+//                    LIBRERIA PER LA GESTIONE DELLE OCCORRENZE         *
+//                                                                      *
+//***********************************************************************
 /// @brief   metodo per la ricerca di una parola nell'array.w
 ///          se la parola è presente ne restituisce la posizione.
 ///          se la parola non è presente restituisce -1
