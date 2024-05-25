@@ -3,17 +3,13 @@
 #include <string.h>
 #include "occorrenza.h"
 
-/**
-
- */
-
 /// @brief   metodo per la ricerca di una parola nell'array.w
-///            se la parola è presente ne restituisce la posizione.
-///         se la parola non è presente restituisce -1
-/// @param a
-/// @param parolaCercata
-/// @param lunghezzaArray
-/// @return
+///          se la parola è presente ne restituisce la posizione.
+///          se la parola non è presente restituisce -1
+/// @param a                l'array in cui cercare la parola
+/// @param parolaCercata    la parola da cercare
+/// @param lunghezzaArray   le dimensioni dell'array
+/// @return                 l'indice della parola nell'array
 int cercaParola(type_parola_w *a, type_parola_w parolaCercata, int lunghezzaArray)
 {
 
