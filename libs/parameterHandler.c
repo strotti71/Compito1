@@ -26,7 +26,7 @@ void leggiParametri(int argc, char *argv[], ParametriInput *parametri)
 {
     parametri->help = 0;
     parametri->nParoleDaGenerare = 100;
-    strcpy(parametri->inputFileName, "tempo.txt");
+    strcpy(parametri->inputFileName, defaultFile);
     strcpy(parametri->startingWord, ".");
 
     if (argc == 2 && (strcmp(argv[1], "-h") == 0))

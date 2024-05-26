@@ -1,16 +1,16 @@
 #include <wchar.h>
 #include <wctype.h>
-#include "./libs/fileHandler.h"
-#include "./libs/occorrenza.h"
-#include "./libs/stringHandler.h"
-#include "./libs/parameterHandler.h"
+#include "../libs/fileHandler.h"
+#include "../libs/occorrenza.h"
+#include "../libs/stringHandler.h"
+#include "../libs/parameterHandler.h"
 
 #define SYZE_CHAR sizeof(char)
 #define SYZE_RECORD sizeof(Record)
 #define _MAX_LENGTH_WORD_ 31 // lunghezza massima della parola (30 char + \0)
 
 type_parola_w *arrayParoleDistinte; // Array contiene tutte le singole istanze delle parole
-Record arrayRecordParole[1000000];
+Record arrayRecordParole[100000];
 ProbabilityRecord *probabilityRecord; // Array in cui vengono caricate le probabilità per ciascuna parola
 int unesedVArM;
 
